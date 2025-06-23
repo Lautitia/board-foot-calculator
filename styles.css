@@ -1,0 +1,401 @@
+/* 重置和基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #F5F5DC;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #333333;
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+}
+
+.calculator-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 32px 24px;
+    box-shadow: 0 8px 32px rgba(139, 69, 19, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* 头部样式 */
+.header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.header h1 {
+    font-family: 'Roboto Slab', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #8B4513;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #A9A9A9;
+    font-weight: 300;
+}
+
+/* 输入区域样式 */
+.input-section {
+    margin-bottom: 24px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.label-row label {
+    font-size: 16px;
+    font-weight: 400;
+    color: #333333;
+}
+
+.pin-button {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+}
+
+.pin-button:hover {
+    background-color: #FF8C00;
+    color: white;
+    opacity: 1;
+}
+
+.pin-button.pinned {
+    background-color: #FF8C00;
+    color: white;
+    opacity: 1;
+}
+
+/* 输入框样式 */
+input[type="number"] {
+    width: 100%;
+    height: 48px;
+    padding: 12px 16px;
+    border: 1px solid #A9A9A9;
+    border-radius: 8px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: #333333;
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: #FF8C00;
+    border-width: 2px;
+}
+
+/* 带单位的输入框 */
+.input-with-unit {
+    display: flex;
+    gap: 8px;
+}
+
+.combined-input {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+}
+
+.combined-input input {
+    flex: 1;
+}
+
+.unit-select {
+    width: 80px;
+    height: 48px;
+    padding: 12px 8px;
+    border: 1px solid #A9A9A9;
+    border-radius: 8px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: #333333;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.unit-select:focus {
+    outline: none;
+    border-color: #FF8C00;
+    border-width: 2px;
+}
+
+/* 价格输入样式 */
+.price-input {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #A9A9A9;
+    border-radius: 8px;
+    padding: 0 16px;
+    transition: border-color 0.2s ease;
+}
+
+.price-input:focus-within {
+    border-color: #FF8C00;
+    border-width: 2px;
+}
+
+.currency {
+    font-size: 16px;
+    color: #333333;
+    margin-right: 8px;
+}
+
+.price-input input {
+    flex: 1;
+    border: none;
+    height: 48px;
+    padding: 12px 0;
+    font-size: 16px;
+}
+
+.price-input input:focus {
+    outline: none;
+    border: none;
+}
+
+.price-unit {
+    font-size: 14px;
+    color: #A9A9A9;
+    margin-left: 8px;
+}
+
+/* 结果显示区域 */
+.result-section {
+    margin-bottom: 24px;
+    padding: 20px 0;
+    border-top: 1px solid #E0E0E0;
+}
+
+.cost-section {
+    margin-bottom: 24px;
+    padding: 20px 0;
+    border-top: 1px solid #E0E0E0;
+}
+
+.cost-section h3 {
+    font-family: 'Roboto Slab', serif;
+    font-size: 20px;
+    color: #8B4513;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.result-group {
+    margin-bottom: 16px;
+}
+
+.result-group label {
+    display: block;
+    font-size: 16px;
+    color: #333333;
+    margin-bottom: 8px;
+}
+
+.result-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 16px;
+    background: #F8F8F8;
+    border-radius: 8px;
+    min-height: 60px;
+}
+
+.result-value {
+    font-family: 'Roboto Slab', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #FF8C00;
+}
+
+.result-unit {
+    font-size: 16px;
+    color: #333333;
+}
+
+/* 按钮区域 */
+.button-section {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.share-button, .reload-button, .clear-button {
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.share-button {
+    background-color: #FF8C00;
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+}
+
+.share-button:hover {
+    background-color: #FF7700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+.reload-button {
+    background-color: #E0E0E0;
+    color: #333333;
+}
+
+.reload-button:hover {
+    background-color: #D0D0D0;
+}
+
+.clear-button {
+    background-color: transparent;
+    color: #A9A9A9;
+    border: 1px solid #A9A9A9;
+}
+
+.clear-button:hover {
+    background-color: #A9A9A9;
+    color: white;
+}
+
+.share-icon {
+    font-size: 18px;
+}
+
+/* 反馈区域 */
+.feedback-section {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #E0E0E0;
+}
+
+.feedback-section p {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #666666;
+}
+
+.feedback-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.feedback-btn {
+    padding: 8px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.yes-btn:hover {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.no-btn:hover {
+    background-color: #F44336;
+    color: white;
+    border-color: #F44336;
+}
+
+.feedback-btn.selected {
+    transform: scale(0.95);
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .calculator-card {
+        padding: 24px 16px;
+    }
+    
+    .header h1 {
+        font-size: 28px;
+    }
+    
+    .result-value {
+        font-size: 28px;
+    }
+    
+    .input-with-unit {
+        flex-direction: column;
+    }
+    
+    .unit-select {
+        width: 100%;
+    }
+}
+
+/* 动画效果 */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.result-value.updated {
+    animation: pulse 0.3s ease;
+}
+
+/* 工具提示样式 */
+.pin-button:hover::after {
+    content: attr(title);
+    position: absolute;
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-top: 25px;
+    margin-left: -20px;
+    z-index: 1000;
+}

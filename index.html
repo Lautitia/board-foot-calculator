@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>板英尺计算器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="calculator-card">
+            <header class="header">
+                <h1>板英尺计算器</h1>
+                <p class="subtitle">Board Foot Calculator</p>
+            </header>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <div class="label-row">
+                        <label for="pieces">板块数量</label>
+                        <button class="pin-button" data-field="pieces" title="保存数值">📌</button>
+                    </div>
+                    <input type="number" id="pieces" value="1" min="1" step="1">
+                </div>
+
+                <div class="input-group">
+                    <div class="label-row">
+                        <label for="thickness">厚度</label>
+                        <button class="pin-button" data-field="thickness" title="保存数值">📌</button>
+                    </div>
+                    <div class="input-with-unit">
+                        <input type="number" id="thickness" step="0.001" min="0">
+                        <select id="thickness-unit" class="unit-select">
+                            <option value="in">in</option>
+                            <option value="mm">mm</option>
+                            <option value="cm">cm</option>
+                            <option value="m">m</option>
+                            <option value="ft">ft</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-row">
+                        <label for="width">宽度</label>
+                        <button class="pin-button" data-field="width" title="保存数值">📌</button>
+                    </div>
+                    <div class="input-with-unit">
+                        <div class="combined-input" id="width-input-container">
+                            <input type="number" id="width" step="0.001" min="0">
+                            <input type="number" id="width-fraction" step="0.001" min="0" style="display: none;" placeholder="小数部分">
+                        </div>
+                        <select id="width-unit" class="unit-select">
+                            <option value="in">in</option>
+                            <option value="mm">mm</option>
+                            <option value="cm">cm</option>
+                            <option value="m">m</option>
+                            <option value="ft">ft</option>
+                            <option value="ft/in">ft + in</option>
+                            <option value="m/cm">m + cm</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-row">
+                        <label for="length">长度</label>
+                        <button class="pin-button" data-field="length" title="保存数值">📌</button>
+                    </div>
+                    <div class="input-with-unit">
+                        <div class="combined-input" id="length-input-container">
+                            <input type="number" id="length" step="0.001" min="0">
+                            <input type="number" id="length-fraction" step="0.001" min="0" style="display: none;" placeholder="小数部分">
+                        </div>
+                        <select id="length-unit" class="unit-select">
+                            <option value="ft">ft</option>
+                            <option value="in">in</option>
+                            <option value="mm">mm</option>
+                            <option value="cm">cm</option>
+                            <option value="m">m</option>
+                            <option value="ft/in">ft + in</option>
+                            <option value="m/cm">m + cm</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <div class="result-group">
+                    <label>总计</label>
+                    <div class="result-display">
+                        <span class="result-value" id="total-board-feet">0</span>
+                        <span class="result-unit">板英尺</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cost-section">
+                <h3>成本计算</h3>
+                <div class="input-group">
+                    <div class="label-row">
+                        <label for="price">单价</label>
+                        <button class="pin-button" data-field="price" title="保存数值">📌</button>
+                    </div>
+                    <div class="price-input">
+                        <span class="currency">¥</span>
+                        <input type="number" id="price" step="0.01" min="0" placeholder="0">
+                        <span class="price-unit">/ 板英尺</span>
+                    </div>
+                </div>
+
+                <div class="result-group">
+                    <label>总成本</label>
+                    <div class="result-display">
+                        <span class="currency">¥</span>
+                        <span class="result-value" id="total-cost">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-section">
+                <button class="share-button" id="share-result">
+                    <span class="share-icon">📤</span>
+                    分享结果
+                </button>
+                <button class="reload-button" id="reload-calculator">重新加载计算器</button>
+                <button class="clear-button" id="clear-all">清空所有变更</button>
+            </div>
+
+            <div class="feedback-section">
+                <p>我们今天解决了您的问题吗？</p>
+                <div class="feedback-buttons">
+                    <button class="feedback-btn yes-btn" id="feedback-yes">👍 是的</button>
+                    <button class="feedback-btn no-btn" id="feedback-no">👎 没有</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
