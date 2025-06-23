@@ -62,7 +62,13 @@ class BoardFootCalculator {
 
         // 图钉按钮事件
         this.pinButtons.forEach(button => {
-            button.addEventListener('click', (e) => this.togglePin(e.target));
+            button.addEventListener('click', (e) => {
+                // 确保总是获取到按钮元素，即使点击的是内部的图标
+                const targetButton = e.target.closest('.pin-button');
+                if (targetButton) {
+                    this.togglePin(targetButton);
+                }
+            });
         });
 
         // 其他按钮事件
@@ -227,12 +233,12 @@ class BoardFootCalculator {
             // 取消固定
             button.classList.remove('pinned');
             this.clearSavedValue(field);
-            // this.showNotification(`已取消保存 ${this.getFieldDisplayName(field)} 的数值`);
+            this.showNotification(`已取消保存 ${this.getFieldDisplayName(field)} 的数值`, 'info');
         } else {
             // 固定值
             button.classList.add('pinned');
             this.saveValue(field);
-            // this.showNotification(`已开启 ${this.getFieldDisplayName(field)} 的自动保存`);
+            this.showNotification(`已开启 ${this.getFieldDisplayName(field)} 的自动保存`, 'success');
         }
     }
 
@@ -438,7 +444,7 @@ class BoardFootCalculator {
 
 // 初始化计算器
 document.addEventListener('DOMContentLoaded', () => {
-    new BoardFootCalculator();
+    window.boardFootCalculator = new BoardFootCalculator();
 });
 
 // 错误处理
