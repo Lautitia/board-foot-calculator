@@ -87,14 +87,31 @@ class BoardFootCalculator {
             input.addEventListener('focus', () => {
                 this.currentlyEditingField = input.id;
                 
-                // For total fields, remove commas when user starts editing
+                // For total fields, only remove formatting if user manually clicked on them
+                // We want to preserve formatting for calculated results
                 if ((input.id === 'total-board-feet' || input.id === 'total-cost') && input.value) {
-                    const cleanValue = this.parseFormattedNumber(input.value);
-                    input.value = cleanValue.toString();
+                    // Only remove formatting if the field is editable (not readonly due to calculation)
+                    const pinButton = document.querySelector(`[data-field="${input.id}"]`);
+                    if (pinButton && pinButton.classList.contains('pinned')) {
+                        // Field is pinned/locked, so user can edit it - remove formatting
+                        const cleanValue = this.parseFormattedNumber(input.value, false);
+                        input.value = cleanValue.toString();
+                    }
+                    // If not pinned, keep the formatting since it's a calculated result
                 }
             });
             
             input.addEventListener('blur', () => {
+                // When user finishes editing, reformat the value if it's a total field
+                if ((input.id === 'total-board-feet' || input.id === 'total-cost') && input.value) {
+                    const pinButton = document.querySelector(`[data-field="${input.id}"]`);
+                    if (pinButton && pinButton.classList.contains('pinned')) {
+                        // Field is pinned/locked, so format the user's input
+                        const formattedValue = this.formatNumberForDisplay(parseFloat(input.value) || 0, 2);
+                        input.value = formattedValue;
+                    }
+                }
+                
                 setTimeout(() => {
                     this.currentlyEditingField = null;
                 }, 100);
@@ -390,8 +407,8 @@ class BoardFootCalculator {
             let length = parseFloat(this.length.value) || 0;
             let lengthFrac = parseFloat(this.lengthFraction.value) || 0;
             let pricePerBF = parseFloat(this.price.value) || 0;
-            let boardFeet = this.parseFormattedNumber(this.totalBoardFeet.value) || 0;
-            let totalCost = this.parseFormattedNumber(this.totalCost.value) || 0;
+            let boardFeet = this.parseFormattedNumber(this.totalBoardFeet.value, false) || 0;
+            let totalCost = this.parseFormattedNumber(this.totalCost.value, false) || 0;
 
             // For locked fields, ensure we use their actual values even if 0
             if (lockedFields.includes('pieces')) {
@@ -489,17 +506,20 @@ class BoardFootCalculator {
             return;
         }
         
-        // If user is currently editing this field, don't override their input
-        if (this.currentlyEditingField === element.id) {
+        // For total fields that are being calculated (not pinned), always show formatted values
+        // Only avoid updating if user is actively editing a pinned field
+        const isEditingPinnedField = this.currentlyEditingField === element.id && 
+                                   pinButton && pinButton.classList.contains('pinned');
+        
+        if (isEditingPinnedField) {
             return;
         }
         
         const oldValue = element.tagName === 'INPUT' ? element.value : element.textContent;
         if (oldValue !== value) {
             if (element.tagName === 'INPUT') {
-                // For all input fields, remove commas to avoid parsing errors
-                const cleanValue = typeof value === 'string' ? value.replace(/,/g, '') : value;
-                element.value = cleanValue;
+                // For total fields, always display formatted values when they are calculated results
+                element.value = value;
             } else {
                 element.textContent = value;
             }
@@ -644,10 +664,10 @@ class BoardFootCalculator {
                 value = this.price.value;
                 break;
             case 'total-board-feet':
-                value = this.parseFormattedNumber(this.totalBoardFeet.value);
+                value = this.parseFormattedNumber(this.totalBoardFeet.value, false);
                 break;
             case 'total-cost':
-                value = this.parseFormattedNumber(this.totalCost.value);
+                value = this.parseFormattedNumber(this.totalCost.value, false);
                 break;
         }
         

@@ -435,12 +435,16 @@ input[type="number"]:focus {
     min-width: 100px;
     text-align: left;
     cursor: text;
+    /* Add consistent padding to prevent layout shift */
+    padding: 2px 4px;
+    border-radius: 4px;
+    /* Use box-sizing to include padding in width calculation */
+    box-sizing: border-box;
 }
 
 .result-value.editable-result:focus {
     background: rgba(255, 140, 0, 0.1);
-    border-radius: 4px;
-    padding: 2px 4px;
+    /* Remove padding change to prevent layout shift */
 }
 
 .result-unit {
