@@ -1,4 +1,4 @@
-// 板英尺计算器 JavaScript
+// Board Foot Calculator JavaScript
 
 class BoardFootCalculator {
     constructor() {
@@ -9,9 +9,10 @@ class BoardFootCalculator {
     }
 
     initializeElements() {
-        // 输入元素
+        // Input elements
         this.pieces = document.getElementById('pieces');
         this.thickness = document.getElementById('thickness');
+        this.thicknessFraction = document.getElementById('thickness-fraction');
         this.thicknessUnit = document.getElementById('thickness-unit');
         this.width = document.getElementById('width');
         this.widthFraction = document.getElementById('width-fraction');
@@ -21,11 +22,11 @@ class BoardFootCalculator {
         this.lengthUnit = document.getElementById('length-unit');
         this.price = document.getElementById('price');
 
-        // 结果元素
+        // Result elements
         this.totalBoardFeet = document.getElementById('total-board-feet');
         this.totalCost = document.getElementById('total-cost');
 
-        // 按钮元素
+        // Button elements
         this.pinButtons = document.querySelectorAll('.pin-button');
         this.shareButton = document.getElementById('share-result');
         this.reloadButton = document.getElementById('reload-calculator');
@@ -33,16 +34,18 @@ class BoardFootCalculator {
         this.feedbackYes = document.getElementById('feedback-yes');
         this.feedbackNo = document.getElementById('feedback-no');
 
-        // 容器元素
+        // Container elements
+        this.thicknessInputContainer = document.getElementById('thickness-input-container');
         this.widthInputContainer = document.getElementById('width-input-container');
         this.lengthInputContainer = document.getElementById('length-input-container');
+        this.thicknessSubUnit = document.getElementById('thickness-sub-unit');
         this.widthSubUnit = document.getElementById('width-sub-unit');
         this.lengthSubUnit = document.getElementById('length-sub-unit');
     }
 
     bindEvents() {
-        // 输入变化事件
-        const inputs = [this.pieces, this.thickness, this.width, this.widthFraction, this.length, this.lengthFraction, this.price];
+        // Input change events
+        const inputs = [this.pieces, this.thickness, this.thicknessFraction, this.width, this.widthFraction, this.length, this.lengthFraction, this.price];
         const selects = [this.thicknessUnit, this.widthUnit, this.lengthUnit];
 
         inputs.forEach(input => {
@@ -60,10 +63,10 @@ class BoardFootCalculator {
             });
         });
 
-        // 图钉按钮事件
+        // Pin button events
         this.pinButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                // 确保总是获取到按钮元素，即使点击的是内部的图标
+                // Ensure we always get the button element, even if clicking on the inner icon
                 const targetButton = e.target.closest('.pin-button');
                 if (targetButton) {
                     this.togglePin(targetButton);
@@ -71,7 +74,7 @@ class BoardFootCalculator {
             });
         });
 
-        // 其他按钮事件
+        // Other button events
         this.shareButton.addEventListener('click', () => this.shareResult());
         this.reloadButton.addEventListener('click', () => this.reloadCalculator());
         this.clearButton.addEventListener('click', () => this.clearAllChanges());
@@ -83,7 +86,11 @@ class BoardFootCalculator {
         const isComposite = select.value.includes('/');
         let fractionInput, container, subUnitLabel, separator;
 
-        if (select.id === 'width-unit') {
+        if (select.id === 'thickness-unit') {
+            fractionInput = this.thicknessFraction;
+            container = this.thicknessInputContainer;
+            subUnitLabel = this.thicknessSubUnit;
+        } else if (select.id === 'width-unit') {
             fractionInput = this.widthFraction;
             container = this.widthInputContainer;
             subUnitLabel = this.widthSubUnit;
@@ -102,7 +109,7 @@ class BoardFootCalculator {
                 subUnitLabel.style.display = 'inline';
                 container.classList.add('composite');
                 
-                // 设置子单位标签
+                // Set sub-unit label
                 if (select.value === 'ft/in') {
                     subUnitLabel.textContent = 'in';
                 } else if (select.value === 'm/cm') {
@@ -118,7 +125,7 @@ class BoardFootCalculator {
         }
     }
 
-    // 单位转换函数
+    // Unit conversion function
     convertToInches(value, unit, fractionValue = 0) {
         const conversions = {
             'in': 1,
@@ -138,36 +145,37 @@ class BoardFootCalculator {
 
     calculate() {
         try {
-            // 获取输入值
+            // Get input values
             const pieces = parseFloat(this.pieces.value) || 1;
             const thickness = parseFloat(this.thickness.value) || 0;
+            const thicknessFrac = parseFloat(this.thicknessFraction.value) || 0;
             const width = parseFloat(this.width.value) || 0;
             const widthFrac = parseFloat(this.widthFraction.value) || 0;
             const length = parseFloat(this.length.value) || 0;
             const lengthFrac = parseFloat(this.lengthFraction.value) || 0;
             const pricePerBF = parseFloat(this.price.value) || 0;
 
-            // 转换为英寸
-            const thicknessInches = this.convertToInches(thickness, this.thicknessUnit.value);
+            // Convert to inches
+            const thicknessInches = this.convertToInches(thickness, this.thicknessUnit.value, thicknessFrac);
             const widthInches = this.convertToInches(width, this.widthUnit.value, widthFrac);
             const lengthInches = this.convertToInches(length, this.lengthUnit.value, lengthFrac);
 
-            // 计算板英尺
-            // 公式: (厚度 × 宽度 × 长度) ÷ 144 × 块数
+            // Calculate board feet
+            // Formula: (thickness × width × length) ÷ 144 × pieces
             let boardFeet = 0;
             if (thicknessInches > 0 && widthInches > 0 && lengthInches > 0) {
                 boardFeet = (thicknessInches * widthInches * lengthInches) / 144 * pieces;
             }
 
-            // 计算总成本
+            // Calculate total cost
             const totalCost = boardFeet * pricePerBF;
 
-            // 更新显示
+            // Update display
             this.updateResult(this.totalBoardFeet, boardFeet.toFixed(2));
             this.updateResult(this.totalCost, totalCost.toFixed(2));
 
         } catch (error) {
-            console.error('计算错误:', error);
+            console.error('Calculation error:', error);
             this.updateResult(this.totalBoardFeet, '0');
             this.updateResult(this.totalCost, '0');
         }
@@ -182,16 +190,17 @@ class BoardFootCalculator {
         }
     }
 
-    // 自动保存功能
+    // Auto-save functionality
     autoSaveIfPinned(element) {
         let field;
         
-        // 根据元素ID确定字段名
+        // Determine field name based on element ID
         switch(element.id) {
             case 'pieces':
                 field = 'pieces';
                 break;
             case 'thickness':
+            case 'thickness-fraction':
                 field = 'thickness';
                 break;
             case 'thickness-unit':
@@ -224,18 +233,18 @@ class BoardFootCalculator {
         }
     }
 
-    // 保存和加载功能
+    // Save and load functionality
     togglePin(button) {
         const field = button.dataset.field;
         const isPinned = button.classList.contains('pinned');
         
         if (isPinned) {
-            // 取消固定
+            // Unpin value
             button.classList.remove('pinned');
             this.clearSavedValue(field);
             this.showNotification(`Disabled auto-save for ${this.getFieldDisplayName(field)}`, 'info');
         } else {
-            // 固定值
+            // Pin value
             button.classList.add('pinned');
             this.saveValue(field);
             this.showNotification(`Enabled auto-save for ${this.getFieldDisplayName(field)}`, 'success');
@@ -268,7 +277,9 @@ class BoardFootCalculator {
                 break;
             case 'thickness':
                 value = this.thickness.value;
+                const thicknessFrac = this.thicknessFraction.value;
                 unit = this.thicknessUnit.value;
+                localStorage.setItem(`bf_calc_${field}_fraction`, thicknessFrac);
                 break;
             case 'width':
                 value = this.width.value;
@@ -302,20 +313,24 @@ class BoardFootCalculator {
             const fraction = localStorage.getItem(`bf_calc_${field}_fraction`);
             
             if (value !== null) {
-                // 标记为已固定
+                // Mark as pinned
                 const pinButton = document.querySelector(`[data-field="${field}"]`);
                 if (pinButton) {
                     pinButton.classList.add('pinned');
                 }
                 
-                // 设置值
+                // Set values
                 switch(field) {
                     case 'pieces':
                         this.pieces.value = value;
                         break;
                     case 'thickness':
                         this.thickness.value = value;
-                        if (unit) this.thicknessUnit.value = unit;
+                        if (unit) {
+                            this.thicknessUnit.value = unit;
+                            this.handleUnitChange(this.thicknessUnit);
+                        }
+                        if (fraction) this.thicknessFraction.value = fraction;
                         break;
                     case 'width':
                         this.width.value = value;
@@ -341,7 +356,7 @@ class BoardFootCalculator {
         });
     }
 
-    // 按钮功能
+    // Button functions
     shareResult() {
         const boardFeet = this.totalBoardFeet.textContent;
         const cost = this.totalCost.textContent;
@@ -354,27 +369,27 @@ class BoardFootCalculator {
                 url: window.location.href
             });
         } else {
-            // 备用方案：复制到剪贴板
+            // Fallback: copy to clipboard
             navigator.clipboard.writeText(shareText).then(() => {
                 this.showNotification('Calculation result copied to clipboard', 'success');
             }).catch(() => {
-                // 如果复制失败，显示结果
+                // If copy fails, show result
                 alert(shareText);
             });
         }
     }
 
     reloadCalculator() {
-        // 重新加载页面
+        // Reload page
         window.location.reload();
     }
 
     clearAllChanges() {
-        // 清除所有本地存储
+        // Clear all localStorage
         const keys = Object.keys(localStorage).filter(key => key.startsWith('bf_calc_'));
         keys.forEach(key => localStorage.removeItem(key));
         
-        // 重置所有输入
+        // Reset all inputs
         this.pieces.value = '1';
         this.thickness.value = '';
         this.width.value = '';
@@ -383,21 +398,21 @@ class BoardFootCalculator {
         this.lengthFraction.value = '';
         this.price.value = '';
         
-        // 重置单位
+        // Reset units
         this.thicknessUnit.value = 'in';
         this.widthUnit.value = 'in';
         this.lengthUnit.value = 'ft';
         
-        // 重置复合输入框
+        // Reset composite input boxes
         this.handleUnitChange(this.widthUnit);
         this.handleUnitChange(this.lengthUnit);
         
-        // 移除所有固定状态
+        // Remove all pinned states
         this.pinButtons.forEach(button => {
             button.classList.remove('pinned');
         });
         
-        // 重新计算
+        // Recalculate
         this.calculate();
         
         this.showNotification('All settings have been reset', 'success');
@@ -406,29 +421,29 @@ class BoardFootCalculator {
     submitFeedback(isPositive) {
         const button = isPositive ? this.feedbackYes : this.feedbackNo;
         
-        // 添加选中效果
+        // Add selection effect
         this.feedbackYes.classList.remove('selected');
         this.feedbackNo.classList.remove('selected');
         button.classList.add('selected');
         
-        // 保存反馈到本地存储
+        // Save feedback to localStorage
         localStorage.setItem('bf_calc_feedback', isPositive ? 'positive' : 'negative');
         localStorage.setItem('bf_calc_feedback_date', new Date().toISOString());
         
-        // 显示感谢消息
+        // Show thank you message
         const message = isPositive ? 'Thank you for your positive feedback!' : 'Thank you for your feedback, we will continue to improve.';
         this.showNotification(message, 'success');
     }
 
     showNotification(message, type = 'info') {
-        // 创建通知元素
+        // Create notification element
         const notification = document.createElement('div');
         notification.textContent = message;
         notification.className = `notification ${type}`;
         
         document.body.appendChild(notification);
         
-        // 3秒后移除
+        // Remove after 3 seconds
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.style.animation = 'slideInDown 0.3s ease reverse';
@@ -442,20 +457,20 @@ class BoardFootCalculator {
     }
 }
 
-// 初始化计算器
+// Initialize calculator
 document.addEventListener('DOMContentLoaded', () => {
     window.boardFootCalculator = new BoardFootCalculator();
 });
 
-// 错误处理
+// Error handling
 window.addEventListener('error', (e) => {
     console.error('Page Error:', e);
 });
 
-// 页面可见性变化时保存状态
+// Save state when page visibility changes
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-        // 页面隐藏时自动保存当前固定的值
+        // Auto-save current pinned values when page is hidden
         const calculator = window.boardFootCalculator;
         if (calculator) {
             calculator.pinButtons.forEach(button => {

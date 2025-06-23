@@ -36,7 +36,12 @@
                         </button>
                     </div>
                     <div class="input-with-unit">
-                        <input type="number" id="thickness" step="0.001" min="0">
+                        <div class="combined-input" id="thickness-input-container">
+                            <input type="number" id="thickness" step="0.001" min="0">
+                            <span class="separator" style="display: none;">|</span>
+                            <input type="number" id="thickness-fraction" step="0.001" min="0" style="display: none;">
+                            <span class="unit-label" id="thickness-sub-unit" style="display: none;"></span>
+                        </div>
                         <select id="thickness-unit" class="unit-select">
                             <option value="in">inches (in)</option>
                             <option value="mm">millimeters (mm)</option>
