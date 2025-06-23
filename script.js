@@ -272,15 +272,22 @@ class BoardFootCalculator {
     togglePin(button) {
         const field = button.dataset.field;
         const isPinned = button.classList.contains('pinned');
+        const lockIcon = button.querySelector('.lock-icon');
         
         if (isPinned) {
-            // Unpin value
+            // Unpin value - switch to unlock icon
             button.classList.remove('pinned');
+            lockIcon.src = 'public/unlock.svg';
+            lockIcon.alt = 'Unlock';
+            button.title = 'Save Value';
             this.clearSavedValue(field);
             this.showNotification(`Disabled auto-save for ${this.getFieldDisplayName(field)}`, 'info');
         } else {
-            // Pin value
+            // Pin value - switch to lock icon
             button.classList.add('pinned');
+            lockIcon.src = 'public/lock.svg';
+            lockIcon.alt = 'Lock';
+            button.title = 'Value Saved';
             this.saveValue(field);
             this.showNotification(`Enabled auto-save for ${this.getFieldDisplayName(field)}`, 'success');
         }
@@ -348,10 +355,16 @@ class BoardFootCalculator {
             const fraction = localStorage.getItem(`bf_calc_${field}_fraction`);
             
             if (value !== null) {
-                // Mark as pinned
+                // Mark as pinned and update icon
                 const pinButton = document.querySelector(`[data-field="${field}"]`);
                 if (pinButton) {
                     pinButton.classList.add('pinned');
+                    const lockIcon = pinButton.querySelector('.lock-icon');
+                    if (lockIcon) {
+                        lockIcon.src = 'public/lock.svg';
+                        lockIcon.alt = 'Lock';
+                        pinButton.title = 'Value Saved';
+                    }
                 }
                 
                 // Set values
@@ -442,9 +455,15 @@ class BoardFootCalculator {
         this.handleUnitChange(this.widthUnit);
         this.handleUnitChange(this.lengthUnit);
         
-        // Remove all pinned states
+        // Remove all pinned states and reset icons
         this.pinButtons.forEach(button => {
             button.classList.remove('pinned');
+            const lockIcon = button.querySelector('.lock-icon');
+            if (lockIcon) {
+                lockIcon.src = 'public/unlock.svg';
+                lockIcon.alt = 'Unlock';
+                button.title = 'Save Value';
+            }
         });
         
         // Recalculate

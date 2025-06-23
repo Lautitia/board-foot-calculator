@@ -107,7 +107,7 @@ body {
     box-shadow: 0 6px 16px rgba(255, 140, 0, 0.4);
 }
 
-.pin-icon {
+.lock-icon {
     width: 16px;
     height: 16px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -115,18 +115,18 @@ body {
     filter: none;
 }
 
-.pin-button:hover .pin-icon {
+.pin-button:hover .lock-icon {
     color: #FF8C00;
     transform: rotate(-15deg);
 }
 
-.pin-button.pinned .pin-icon {
+.pin-button.pinned .lock-icon {
     color: white;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
     transform: rotate(0deg);
 }
 
-.pin-button.pinned:hover .pin-icon {
+.pin-button.pinned:hover .lock-icon {
     transform: rotate(5deg) scale(1.1);
 }
 
