@@ -112,9 +112,14 @@
 
             <div class="result-section">
                 <div class="result-group">
-                    <label>Total</label>
+                    <div class="label-row">
+                        <label>Total</label>
+                        <button class="pin-button" data-field="total-board-feet" title="Save Value">
+                            <img src="public/unlock.svg" alt="Save" class="lock-icon">
+                        </button>
+                    </div>
                     <div class="result-display">
-                        <span class="result-value" id="total-board-feet">0</span>
+                        <input type="number" class="result-value editable-result" id="total-board-feet" value="0" step="0.01" min="0">
                         <span class="result-unit">board feet</span>
                     </div>
                 </div>
@@ -137,10 +142,15 @@
                 </div>
 
                 <div class="result-group">
-                    <label>Total Cost</label>
+                    <div class="label-row">
+                        <label>Total Cost</label>
+                        <button class="pin-button" data-field="total-cost" title="Save Value">
+                            <img src="public/unlock.svg" alt="Save" class="lock-icon">
+                        </button>
+                    </div>
                     <div class="result-display">
                         <span class="currency">$</span>
-                        <span class="result-value" id="total-cost">0</span>
+                        <input type="number" class="result-value editable-result" id="total-cost" value="0" step="0.01" min="0">
                     </div>
                 </div>
             </div>

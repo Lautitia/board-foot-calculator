@@ -58,13 +58,18 @@ class BoardFootCalculator {
 
     bindEvents() {
         // Input change events
-        const inputs = [this.pieces, this.thickness, this.thicknessFraction, this.width, this.widthFraction, this.length, this.lengthFraction, this.price];
+        const inputs = [this.pieces, this.thickness, this.thicknessFraction, this.width, this.widthFraction, this.length, this.lengthFraction, this.price, this.totalBoardFeet, this.totalCost];
         const selects = [this.thicknessUnit, this.widthUnit, this.lengthUnit];
 
         inputs.forEach(input => {
             input.addEventListener('input', () => {
-                this.calculate();
-                this.autoSaveIfPinned(input);
+                // For editable results, we don't want to recalculate automatically
+                if (input.id === 'total-board-feet' || input.id === 'total-cost') {
+                    this.autoSaveIfPinned(input);
+                } else {
+                    this.calculate();
+                    this.autoSaveIfPinned(input);
+                }
             });
         });
 
@@ -205,7 +210,7 @@ class BoardFootCalculator {
             // Calculate total cost
             const totalCost = boardFeet * pricePerBF;
 
-            // Update display
+            // Update display only if not pinned
             this.updateResult(this.totalBoardFeet, boardFeet.toFixed(2));
             this.updateResult(this.totalCost, totalCost.toFixed(2));
 
@@ -217,9 +222,22 @@ class BoardFootCalculator {
     }
 
     updateResult(element, value) {
-        const oldValue = element.textContent;
+        // Check if this result field is pinned (locked)
+        const field = element.id;
+        const pinButton = document.querySelector(`[data-field="${field}"]`);
+        
+        // If pinned, don't update the value
+        if (pinButton && pinButton.classList.contains('pinned')) {
+            return;
+        }
+        
+        const oldValue = element.tagName === 'INPUT' ? element.value : element.textContent;
         if (oldValue !== value) {
-            element.textContent = value;
+            if (element.tagName === 'INPUT') {
+                element.value = value;
+            } else {
+                element.textContent = value;
+            }
             element.classList.add('updated');
             setTimeout(() => element.classList.remove('updated'), 300);
         }
@@ -257,6 +275,12 @@ class BoardFootCalculator {
                 break;
             case 'price':
                 field = 'price';
+                break;
+            case 'total-board-feet':
+                field = 'total-board-feet';
+                break;
+            case 'total-cost':
+                field = 'total-cost';
                 break;
         }
         
@@ -305,7 +329,9 @@ class BoardFootCalculator {
             'thickness': 'Thickness',
             'width': 'Width',
             'length': 'Length',
-            'price': 'Price per Board Foot'
+            'price': 'Price per Board Foot',
+            'total-board-feet': 'Total Board Feet',
+            'total-cost': 'Total Cost'
         };
         return names[field] || field;
     }
@@ -338,6 +364,12 @@ class BoardFootCalculator {
             case 'price':
                 value = this.price.value;
                 break;
+            case 'total-board-feet':
+                value = this.totalBoardFeet.value;
+                break;
+            case 'total-cost':
+                value = this.totalCost.value;
+                break;
         }
         
         localStorage.setItem(`bf_calc_${field}`, value);
@@ -347,7 +379,7 @@ class BoardFootCalculator {
     }
 
     loadSavedValues() {
-        const fields = ['pieces', 'thickness', 'width', 'length', 'price'];
+        const fields = ['pieces', 'thickness', 'width', 'length', 'price', 'total-board-feet', 'total-cost'];
         
         fields.forEach(field => {
             const value = localStorage.getItem(`bf_calc_${field}`);
@@ -399,6 +431,12 @@ class BoardFootCalculator {
                     case 'price':
                         this.price.value = value;
                         break;
+                    case 'total-board-feet':
+                        this.totalBoardFeet.value = value;
+                        break;
+                    case 'total-cost':
+                        this.totalCost.value = value;
+                        break;
                 }
             }
         });
@@ -406,8 +444,8 @@ class BoardFootCalculator {
 
     // Button functions
     shareResult() {
-        const boardFeet = this.totalBoardFeet.textContent;
-        const cost = this.totalCost.textContent;
+        const boardFeet = this.totalBoardFeet.value;
+        const cost = this.totalCost.value;
         const shareText = `Board Foot Calculation Result: ${boardFeet} board feet, Total Cost: $${cost}`;
         
         if (navigator.share) {
@@ -445,6 +483,8 @@ class BoardFootCalculator {
         this.length.value = '';
         this.lengthFraction.value = '';
         this.price.value = '';
+        this.totalBoardFeet.value = '0';
+        this.totalCost.value = '0';
         
         // Reset units
         this.thicknessUnit.value = 'in';
