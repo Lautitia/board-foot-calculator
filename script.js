@@ -609,6 +609,7 @@ class BoardFootCalculator {
             lockIcon.alt = 'Lock';
             button.title = 'Value Locked';
             this.saveValue(field);
+            
             this.showNotification(`${this.getFieldDisplayName(field)} is now locked to its current value`, 'success');
         }
         
