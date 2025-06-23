@@ -262,6 +262,28 @@ class BoardFootCalculator {
         return { main: result };
     }
 
+    // Helper method to format numbers with commas for display
+    formatNumberForDisplay(number, decimals = 2) {
+        if (isNaN(number) || number === null || number === undefined) {
+            return '0.00';
+        }
+        
+        const num = parseFloat(number);
+        return num.toLocaleString('en-US', {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        });
+    }
+
+    // Helper method to parse numbers that may contain commas
+    parseFormattedNumber(value) {
+        if (typeof value === 'string') {
+            // Remove commas and parse as float
+            return parseFloat(value.replace(/,/g, '')) || 0;
+        }
+        return parseFloat(value) || 0;
+    }
+
     calculate() {
         try {
             // Get current locked states
@@ -277,8 +299,8 @@ class BoardFootCalculator {
             let length = parseFloat(this.length.value) || 0;
             let lengthFrac = parseFloat(this.lengthFraction.value) || 0;
             let pricePerBF = parseFloat(this.price.value) || 0;
-            let boardFeet = parseFloat(this.totalBoardFeet.value) || 0;
-            let totalCost = parseFloat(this.totalCost.value) || 0;
+            let boardFeet = this.parseFormattedNumber(this.totalBoardFeet.value) || 0;
+            let totalCost = this.parseFormattedNumber(this.totalCost.value) || 0;
 
             // For locked fields, ensure we use their actual values even if 0
             if (lockedFields.includes('pieces')) {
@@ -297,7 +319,7 @@ class BoardFootCalculator {
                 // Calculate board feet from dimensions
                 if (thicknessInches > 0 && widthInches > 0 && lengthInches > 0 && pieces > 0) {
                     boardFeet = (thicknessInches * widthInches * lengthInches) / 144 * pieces;
-                    this.updateResult(this.totalBoardFeet, boardFeet.toFixed(2));
+                    this.updateResult(this.totalBoardFeet, this.formatNumberForDisplay(boardFeet, 2));
                 } else {
                     // If any required dimension is 0 or missing, set board feet to 0
                     boardFeet = 0;
@@ -308,7 +330,7 @@ class BoardFootCalculator {
             if (!lockedFields.includes('total-cost')) {
                 // Calculate total cost
                 totalCost = boardFeet * pricePerBF;
-                this.updateResult(this.totalCost, totalCost.toFixed(2));
+                this.updateResult(this.totalCost, this.formatNumberForDisplay(totalCost, 2));
             }
             
             // Reverse calculations - if we have board feet and some dimensions, calculate missing dimension
@@ -358,7 +380,7 @@ class BoardFootCalculator {
                 this.updateResult(this.price, pricePerBF.toFixed(2));
             } else if (lockedFields.includes('price') && pricePerBF > 0 && boardFeet > 0 && !lockedFields.includes('total-cost')) {
                 totalCost = boardFeet * pricePerBF;
-                this.updateResult(this.totalCost, totalCost.toFixed(2));
+                this.updateResult(this.totalCost, this.formatNumberForDisplay(totalCost, 2));
             }
 
         } catch (error) {
@@ -529,10 +551,10 @@ class BoardFootCalculator {
                 value = this.price.value;
                 break;
             case 'total-board-feet':
-                value = this.totalBoardFeet.value;
+                value = this.parseFormattedNumber(this.totalBoardFeet.value);
                 break;
             case 'total-cost':
-                value = this.totalCost.value;
+                value = this.parseFormattedNumber(this.totalCost.value);
                 break;
         }
         
@@ -596,10 +618,10 @@ class BoardFootCalculator {
                         this.price.value = value;
                         break;
                     case 'total-board-feet':
-                        this.totalBoardFeet.value = value;
+                        this.totalBoardFeet.value = this.formatNumberForDisplay(parseFloat(value), 2);
                         break;
                     case 'total-cost':
-                        this.totalCost.value = value;
+                        this.totalCost.value = this.formatNumberForDisplay(parseFloat(value), 2);
                         break;
                 }
             }
@@ -717,31 +739,19 @@ class BoardFootCalculator {
     }
 
     initializeDefaultLockState() {
-        // If no saved pin states exist, set default: lock most fields, leave one unlocked
+        // If no saved pin states exist, set default: all fields unlocked
         const hasAnySavedPins = ['pieces', 'thickness', 'width', 'length', 'price', 'total-board-feet', 'total-cost']
             .some(field => localStorage.getItem(`bf_calc_${field}`) !== null);
             
         if (!hasAnySavedPins) {
-            // Lock most fields by default, leave total-board-feet unlocked for calculation
+            // Set all fields to unlocked by default
             this.pinButtons.forEach(button => {
-                const field = button.dataset.field;
-                if (field !== 'total-board-feet') {
-                    button.classList.add('pinned');
-                    const lockIcon = button.querySelector('.lock-icon');
-                    if (lockIcon) {
-                        lockIcon.src = 'public/lock.svg';
-                        lockIcon.alt = 'Lock';
-                        button.title = 'Value Locked';
-                    }
-                } else {
-                    // Keep total-board-feet unlocked for calculation
-                    button.classList.remove('pinned');
-                    const lockIcon = button.querySelector('.lock-icon');
-                    if (lockIcon) {
-                        lockIcon.src = 'public/unlock.svg';
-                        lockIcon.alt = 'Unlock';
-                        button.title = 'Value will be calculated';
-                    }
+                button.classList.remove('pinned');
+                const lockIcon = button.querySelector('.lock-icon');
+                if (lockIcon) {
+                    lockIcon.src = 'public/unlock.svg';
+                    lockIcon.alt = 'Unlock';
+                    button.title = 'Value will be calculated';
                 }
             });
         }
