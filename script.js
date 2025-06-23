@@ -8,6 +8,9 @@ class BoardFootCalculator {
         this.initializeMainUnitLabels();
         this.initializeDefaultLockState();
         this.calculate();
+        
+        // Track which field user is currently editing
+        this.currentlyEditingField = null;
     }
 
     initializeElements() {
@@ -64,9 +67,31 @@ class BoardFootCalculator {
 
         inputs.forEach(input => {
             input.addEventListener('input', () => {
+                // Track that user is editing this field
+                this.currentlyEditingField = input.id;
+                
                 // Always recalculate when any input changes
                 this.calculate();
                 this.autoSaveIfPinned(input);
+                
+                // Clear the editing field tracking after a short delay
+                // to allow calculation to complete
+                setTimeout(() => {
+                    if (this.currentlyEditingField === input.id) {
+                        this.currentlyEditingField = null;
+                    }
+                }, 100);
+            });
+            
+            // Also track focus events for better user experience
+            input.addEventListener('focus', () => {
+                this.currentlyEditingField = input.id;
+            });
+            
+            input.addEventListener('blur', () => {
+                setTimeout(() => {
+                    this.currentlyEditingField = null;
+                }, 100);
             });
         });
 
@@ -351,6 +376,11 @@ class BoardFootCalculator {
             return;
         }
         
+        // If user is currently editing this field, don't override their input
+        if (this.currentlyEditingField === element.id) {
+            return;
+        }
+        
         const oldValue = element.tagName === 'INPUT' ? element.value : element.textContent;
         if (oldValue !== value) {
             if (element.tagName === 'INPUT') {
@@ -419,13 +449,8 @@ class BoardFootCalculator {
         const lockIcon = button.querySelector('.lock-icon');
         
         if (isPinned) {
-            // User wants to unlock (unpin) this field
-            // Check if unlocking this field would leave too few locked fields
-            const lockedFields = this.getLockedFields();
-            if (lockedFields.length <= 1) {
-                this.showNotification(`At least one field must remain unlocked for calculation. Cannot unlock all fields.`, 'warning');
-                return;
-            }
+            // User wants to unlock (unpin) this field - this is always allowed
+            // because unlocking means adding one more field that can be calculated
             
             // Unlock the field
             button.classList.remove('pinned');
@@ -436,7 +461,7 @@ class BoardFootCalculator {
             this.showNotification(`${this.getFieldDisplayName(field)} will now be calculated automatically`, 'info');
         } else {
             // User wants to lock (pin) this field
-            // Check if locking this field would leave too many unlocked fields
+            // Check if locking this field would leave no unlocked fields
             const unlockedFields = this.getUnlockedFields();
             if (unlockedFields.length <= 1) {
                 this.showNotification(`At least one field must remain unlocked for calculation.`, 'warning');
@@ -636,7 +661,7 @@ class BoardFootCalculator {
         this.handleUnitChange(this.widthUnit);
         this.handleUnitChange(this.lengthUnit);
         
-        // Reset all lock states to unlocked first
+        // Reset all lock states to unlocked (user can choose which fields to lock)
         this.pinButtons.forEach(button => {
             button.classList.remove('pinned');
             const lockIcon = button.querySelector('.lock-icon');
@@ -646,20 +671,6 @@ class BoardFootCalculator {
                 button.title = 'Value will be calculated';
             }
         });
-        
-        // Apply minimal lock state: only lock total-cost to ensure calculation works
-        // This leaves 6 fields unlocked and only 1 locked, which satisfies the "at least one field unlocked" rule
-        const defaultLockedField = 'total-cost'; // Lock total-cost by default
-        const buttonToLock = document.querySelector(`[data-field="${defaultLockedField}"]`);
-        if (buttonToLock) {
-            buttonToLock.classList.add('pinned');
-            const lockIcon = buttonToLock.querySelector('.lock-icon');
-            if (lockIcon) {
-                lockIcon.src = 'public/lock.svg';
-                lockIcon.alt = 'Lock';
-                lockIcon.title = 'Value Locked';
-            }
-        }
         
         // Recalculate with new values
         this.calculate();
