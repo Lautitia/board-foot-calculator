@@ -1,23 +1,66 @@
-# Board Foot Calculator
+# Board Foot Calculator - Free Online Lumber Volume Calculator
 
-A modern static web page board foot calculator with multi-unit conversion and value saving features.
+A professional, modern web-based board foot calculator designed for woodworkers, contractors, and lumber professionals. Calculate lumber volume and costs with precision using our free online tool.
 
-## Key Features
+## 🎯 Key Features
 
-### Core Calculation Functions
-- **Board Foot Calculation**: Automatically calculates board feet based on thickness, width, and length
-- **Cost Calculation**: Automatically calculates total cost based on unit price
-- **Real-time Calculation**: Automatically updates results when inputs change
+### Core Board Foot Calculation Functions
+- **Accurate Board Foot Calculation**: Automatically calculates board feet based on thickness, width, and length using the standard lumber industry formula
+- **Real-time Cost Calculation**: Instantly computes total lumber costs based on price per board foot
+- **Live Updates**: All calculations update automatically as you input dimensions
+- **Multi-unit Support**: Convert between inches, feet, millimeters, centimeters, and meters
 
-### Unit Support
+### Advanced Unit Conversion System
 - **Thickness Units**: inches (in), millimeters (mm), centimeters (cm), meters (m), feet (ft)
 - **Width Units**: inches (in), millimeters (mm), centimeters (cm), meters (m), feet (ft), feet+inches (ft+in), meters+centimeters (m+cm)
 - **Length Units**: feet (ft), inches (in), millimeters (mm), centimeters (cm), meters (m), feet+inches (ft+in), meters+centimeters (m+cm)
 
-### Data Saving Features
-- **Pin Save**: The 📌 button next to each input field can save the current value
-- **Auto Load**: Automatically loads saved values after page refresh
-- **Local Storage**: Data is saved in browser local storage, no server required
+### Smart Data Persistence Features
+- **Pin Save Functionality**: Lock values using the pin button next to each input field
+- **Auto Load**: Automatically restores saved values after page refresh
+- **Local Storage**: Secure data storage in browser local storage, no server required
+- **Cross-session Persistence**: Values remain saved between browser sessions
+
+## 📐 Board Foot Formula
+
+The board foot calculator uses the standard lumber industry formula:
+
+**Board Feet = (Thickness × Width × Length × Number of Pieces) ÷ 144**
+
+*Note: When all measurements are in inches. The calculator automatically handles unit conversions.*
+
+## 🛠️ How to Use the Board Foot Calculator
+
+1. **Enter Number of Pieces**: Input the quantity of lumber boards
+2. **Set Board Thickness**: Enter thickness with your preferred unit
+3. **Input Board Width**: Specify width with unit conversion options
+4. **Enter Board Length**: Input length for volume calculation
+5. **View Results**: See instant board foot calculations
+6. **Add Pricing**: Enter cost per board foot for total price estimation
+7. **Save Values**: Use pin buttons to lock frequently used dimensions
+
+## 🎨 Features for Professionals
+
+- **Multi-unit Flexibility**: Work with metric or imperial units
+- **Cost Estimation**: Built-in lumber pricing calculator
+- **Precision Calculations**: Accurate to 3 decimal places
+- **Mobile Responsive**: Works on phones, tablets, and desktop
+- **No Installation**: Browser-based tool, no downloads required
+- **Free to Use**: No registration or payment required
+
+## 🌐 SEO Keywords
+
+Board foot calculator, lumber calculator, wood volume calculator, board feet, woodworking calculator, lumber measurement, wood calculator, board foot formula, lumber volume, wood measurement tool, lumber pricing calculator, board foot conversion, woodworking tools, lumber cost calculator.
+
+## 📱 Compatibility
+
+- ✅ All modern web browsers (Chrome, Firefox, Safari, Edge)
+- ✅ Mobile devices and tablets
+- ✅ Desktop computers
+- ✅ Works offline after initial load
+- ✅ No plugins or extensions required
+
+## 🔧 Technical Details
 
 ### Other Features
 - **Share Results**: One-click sharing of calculation results
