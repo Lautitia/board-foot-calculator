@@ -36,6 +36,8 @@ class BoardFootCalculator {
         // 容器元素
         this.widthInputContainer = document.getElementById('width-input-container');
         this.lengthInputContainer = document.getElementById('length-input-container');
+        this.widthSubUnit = document.getElementById('width-sub-unit');
+        this.lengthSubUnit = document.getElementById('length-sub-unit');
     }
 
     bindEvents() {
@@ -44,13 +46,17 @@ class BoardFootCalculator {
         const selects = [this.thicknessUnit, this.widthUnit, this.lengthUnit];
 
         inputs.forEach(input => {
-            input.addEventListener('input', () => this.calculate());
+            input.addEventListener('input', () => {
+                this.calculate();
+                this.autoSaveIfPinned(input);
+            });
         });
 
         selects.forEach(select => {
             select.addEventListener('change', () => {
                 this.handleUnitChange(select);
                 this.calculate();
+                this.autoSaveIfPinned(select);
             });
         });
 
@@ -69,28 +75,37 @@ class BoardFootCalculator {
 
     handleUnitChange(select) {
         const isComposite = select.value.includes('/');
-        let fractionInput, container;
+        let fractionInput, container, subUnitLabel, separator;
 
         if (select.id === 'width-unit') {
             fractionInput = this.widthFraction;
             container = this.widthInputContainer;
+            subUnitLabel = this.widthSubUnit;
         } else if (select.id === 'length-unit') {
             fractionInput = this.lengthFraction;
             container = this.lengthInputContainer;
+            subUnitLabel = this.lengthSubUnit;
         }
 
-        if (fractionInput && container) {
+        if (fractionInput && container && subUnitLabel) {
+            separator = container.querySelector('.separator');
+            
             if (isComposite) {
                 fractionInput.style.display = 'block';
+                separator.style.display = 'inline';
+                subUnitLabel.style.display = 'inline';
                 container.classList.add('composite');
-                // 更新占位符
+                
+                // 设置子单位标签
                 if (select.value === 'ft/in') {
-                    fractionInput.placeholder = '英寸部分';
+                    subUnitLabel.textContent = 'in';
                 } else if (select.value === 'm/cm') {
-                    fractionInput.placeholder = '厘米部分';
+                    subUnitLabel.textContent = 'cm';
                 }
             } else {
                 fractionInput.style.display = 'none';
+                separator.style.display = 'none';
+                subUnitLabel.style.display = 'none';
                 fractionInput.value = '';
                 container.classList.remove('composite');
             }
@@ -105,14 +120,14 @@ class BoardFootCalculator {
             'mm': 1/25.4,
             'cm': 1/2.54,
             'm': 1/0.0254,
-            'ft/in': (val, frac) => val * 12 + parseFloat(frac || 0),
-            'm/cm': (val, frac) => val / 0.0254 + (parseFloat(frac || 0) / 2.54)
+            'ft/in': (val, frac) => (parseFloat(val || 0) * 12) + parseFloat(frac || 0),
+            'm/cm': (val, frac) => (parseFloat(val || 0) / 0.0254) + (parseFloat(frac || 0) / 2.54)
         };
 
         if (typeof conversions[unit] === 'function') {
             return conversions[unit](value, fractionValue);
         }
-        return value * conversions[unit];
+        return parseFloat(value || 0) * conversions[unit];
     }
 
     calculate() {
@@ -161,6 +176,48 @@ class BoardFootCalculator {
         }
     }
 
+    // 自动保存功能
+    autoSaveIfPinned(element) {
+        let field;
+        
+        // 根据元素ID确定字段名
+        switch(element.id) {
+            case 'pieces':
+                field = 'pieces';
+                break;
+            case 'thickness':
+                field = 'thickness';
+                break;
+            case 'thickness-unit':
+                field = 'thickness';
+                break;
+            case 'width':
+            case 'width-fraction':
+                field = 'width';
+                break;
+            case 'width-unit':
+                field = 'width';
+                break;
+            case 'length':
+            case 'length-fraction':
+                field = 'length';
+                break;
+            case 'length-unit':
+                field = 'length';
+                break;
+            case 'price':
+                field = 'price';
+                break;
+        }
+        
+        if (field) {
+            const pinButton = document.querySelector(`[data-field="${field}"]`);
+            if (pinButton && pinButton.classList.contains('pinned')) {
+                this.saveValue(field);
+            }
+        }
+    }
+
     // 保存和加载功能
     togglePin(button) {
         const field = button.dataset.field;
@@ -169,15 +226,31 @@ class BoardFootCalculator {
         if (isPinned) {
             // 取消固定
             button.classList.remove('pinned');
-            localStorage.removeItem(`bf_calc_${field}`);
-            if (field.includes('Unit')) {
-                localStorage.removeItem(`bf_calc_${field}`);
-            }
+            this.clearSavedValue(field);
+            // this.showNotification(`已取消保存 ${this.getFieldDisplayName(field)} 的数值`);
         } else {
             // 固定值
             button.classList.add('pinned');
             this.saveValue(field);
+            // this.showNotification(`已开启 ${this.getFieldDisplayName(field)} 的自动保存`);
         }
+    }
+
+    clearSavedValue(field) {
+        localStorage.removeItem(`bf_calc_${field}`);
+        localStorage.removeItem(`bf_calc_${field}_unit`);
+        localStorage.removeItem(`bf_calc_${field}_fraction`);
+    }
+
+    getFieldDisplayName(field) {
+        const names = {
+            'pieces': '板块数量',
+            'thickness': '厚度',
+            'width': '宽度',
+            'length': '长度',
+            'price': '单价'
+        };
+        return names[field] || field;
     }
 
     saveValue(field) {
@@ -277,7 +350,7 @@ class BoardFootCalculator {
         } else {
             // 备用方案：复制到剪贴板
             navigator.clipboard.writeText(shareText).then(() => {
-                this.showNotification('计算结果已复制到剪贴板');
+                this.showNotification('计算结果已复制到剪贴板', 'success');
             }).catch(() => {
                 // 如果复制失败，显示结果
                 alert(shareText);
@@ -321,7 +394,7 @@ class BoardFootCalculator {
         // 重新计算
         this.calculate();
         
-        this.showNotification('所有设置已重置');
+        this.showNotification('所有设置已重置', 'success');
     }
 
     submitFeedback(isPositive) {
@@ -338,33 +411,26 @@ class BoardFootCalculator {
         
         // 显示感谢消息
         const message = isPositive ? '感谢您的正面反馈！' : '感谢您的反馈，我们会继续改进。';
-        this.showNotification(message);
+        this.showNotification(message, 'success');
     }
 
-    showNotification(message) {
+    showNotification(message, type = 'info') {
         // 创建通知元素
         const notification = document.createElement('div');
         notification.textContent = message;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            z-index: 1000;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        `;
+        notification.className = `notification ${type}`;
         
         document.body.appendChild(notification);
         
         // 3秒后移除
         setTimeout(() => {
             if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
+                notification.style.animation = 'slideInDown 0.3s ease reverse';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
             }
         }, 3000);
     }

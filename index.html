@@ -21,7 +21,9 @@
                 <div class="input-group">
                     <div class="label-row">
                         <label for="pieces">板块数量</label>
-                        <button class="pin-button" data-field="pieces" title="保存数值">📌</button>
+                        <button class="pin-button" data-field="pieces" title="保存数值">
+                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        </button>
                     </div>
                     <input type="number" id="pieces" value="1" min="1" step="1">
                 </div>
@@ -29,7 +31,9 @@
                 <div class="input-group">
                     <div class="label-row">
                         <label for="thickness">厚度</label>
-                        <button class="pin-button" data-field="thickness" title="保存数值">📌</button>
+                        <button class="pin-button" data-field="thickness" title="保存数值">
+                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        </button>
                     </div>
                     <div class="input-with-unit">
                         <input type="number" id="thickness" step="0.001" min="0">
@@ -46,12 +50,16 @@
                 <div class="input-group">
                     <div class="label-row">
                         <label for="width">宽度</label>
-                        <button class="pin-button" data-field="width" title="保存数值">📌</button>
+                        <button class="pin-button" data-field="width" title="保存数值">
+                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        </button>
                     </div>
                     <div class="input-with-unit">
                         <div class="combined-input" id="width-input-container">
                             <input type="number" id="width" step="0.001" min="0">
-                            <input type="number" id="width-fraction" step="0.001" min="0" style="display: none;" placeholder="小数部分">
+                            <span class="separator" style="display: none;">|</span>
+                            <input type="number" id="width-fraction" step="0.001" min="0" style="display: none;">
+                            <span class="unit-label" id="width-sub-unit" style="display: none;"></span>
                         </div>
                         <select id="width-unit" class="unit-select">
                             <option value="in">in</option>
@@ -68,12 +76,16 @@
                 <div class="input-group">
                     <div class="label-row">
                         <label for="length">长度</label>
-                        <button class="pin-button" data-field="length" title="保存数值">📌</button>
+                        <button class="pin-button" data-field="length" title="保存数值">
+                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        </button>
                     </div>
                     <div class="input-with-unit">
                         <div class="combined-input" id="length-input-container">
                             <input type="number" id="length" step="0.001" min="0">
-                            <input type="number" id="length-fraction" step="0.001" min="0" style="display: none;" placeholder="小数部分">
+                            <span class="separator" style="display: none;">|</span>
+                            <input type="number" id="length-fraction" step="0.001" min="0" style="display: none;">
+                            <span class="unit-label" id="length-sub-unit" style="display: none;"></span>
                         </div>
                         <select id="length-unit" class="unit-select">
                             <option value="ft">ft</option>
@@ -103,7 +115,9 @@
                 <div class="input-group">
                     <div class="label-row">
                         <label for="price">单价</label>
-                        <button class="pin-button" data-field="price" title="保存数值">📌</button>
+                        <button class="pin-button" data-field="price" title="保存数值">
+                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        </button>
                     </div>
                     <div class="price-input">
                         <span class="currency">¥</span>

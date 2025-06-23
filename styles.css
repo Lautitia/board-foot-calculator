@@ -74,24 +74,134 @@ body {
 .pin-button {
     background: none;
     border: none;
-    font-size: 14px;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0.6;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    min-height: 28px;
 }
 
 .pin-button:hover {
-    background-color: #FF8C00;
-    color: white;
+    background-color: rgba(255, 140, 0, 0.1);
     opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.2);
 }
 
 .pin-button.pinned {
-    background-color: #FF8C00;
-    color: white;
+    background: linear-gradient(135deg, #FF8C00 0%, #FF7700 100%);
     opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+}
+
+.pin-button.pinned:hover {
+    background: linear-gradient(135deg, #FF7700 0%, #FF6600 100%);
+    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 6px 16px rgba(255, 140, 0, 0.4);
+}
+
+.pin-icon {
+    width: 16px;
+    height: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #666666;
+    filter: none;
+}
+
+.pin-button:hover .pin-icon {
+    color: #FF8C00;
+    transform: rotate(-15deg);
+}
+
+.pin-button.pinned .pin-icon {
+    color: white;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    transform: rotate(0deg);
+}
+
+.pin-button.pinned:hover .pin-icon {
+    transform: rotate(5deg) scale(1.1);
+}
+
+/* 添加一个小脉冲动画当按钮被激活时 */
+.pin-button.pinned::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 140, 0, 0.95);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+}
+
+.pin-button.pinned::before {
+    content: '';
+    position: absolute;
+    bottom: 112%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(255, 140, 0, 0.95);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.pin-button.pinned:hover::after,
+.pin-button.pinned:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 脉冲动画背景 */
+.pin-button.pinned {
+    position: relative;
+}
+
+.pin-button.pinned .pin-pulse {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #FF8C00, #FF7700);
+    border-radius: 8px;
+    opacity: 0.3;
+    z-index: -1;
+    animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
 }
 
 /* 输入框样式 */
@@ -123,11 +233,60 @@ input[type="number"]:focus {
 .combined-input {
     flex: 1;
     display: flex;
-    gap: 4px;
+    align-items: center;
+    background: white;
+    border: 1px solid #A9A9A9;
+    border-radius: 8px;
+    padding: 0 16px;
+    transition: border-color 0.2s ease;
+    height: 48px;
+}
+
+.combined-input:focus-within {
+    border-color: #FF8C00;
+    border-width: 2px;
 }
 
 .combined-input input {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-size: 16px;
+    color: #333333;
+    text-align: center;
+    min-width: 0;
+}
+
+.combined-input input:focus {
+    outline: none;
+}
+
+.combined-input.composite {
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.combined-input.composite input:first-child {
+    text-align: right;
     flex: 1;
+}
+
+.combined-input.composite .separator {
+    color: #A9A9A9;
+    font-weight: 300;
+    margin: 0 4px;
+}
+
+.combined-input.composite input:last-child {
+    text-align: left;
+    flex: 1;
+}
+
+.combined-input.composite .unit-label {
+    font-size: 14px;
+    color: #666666;
+    font-weight: 300;
+    margin-left: 4px;
 }
 
 .unit-select {
@@ -366,12 +525,18 @@ input[type="number"]:focus {
         font-size: 28px;
     }
     
-    .input-with-unit {
-        flex-direction: column;
+    .unit-select {
+        width: 70px;
+        font-size: 12px;
+        padding: 12px 4px;
     }
     
-    .unit-select {
-        width: 100%;
+    .combined-input {
+        padding: 0 12px;
+    }
+    
+    .input-with-unit {
+        gap: 6px;
     }
 }
 
@@ -387,15 +552,115 @@ input[type="number"]:focus {
 }
 
 /* 工具提示样式 */
-.pin-button:hover::after {
+.pin-button {
+    position: relative;
+}
+
+.pin-button::after {
     content: attr(title);
     position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(51, 51, 51, 0.95);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+}
+
+.pin-button::before {
+    content: '';
+    position: absolute;
+    bottom: 112%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(51, 51, 51, 0.95);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.pin-button:hover::after,
+.pin-button:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.pin-button.pinned::after {
+    background: rgba(255, 140, 0, 0.95);
+}
+
+.pin-button.pinned::before {
+    border-top-color: rgba(255, 140, 0, 0.95);
+}
+
+/* 覆盖激活状态的工具提示样式，避免与脉冲动画冲突 */
+.pin-button.pinned:hover::after {
+    background: rgba(255, 140, 0, 0.95);
+}
+
+.pin-button.pinned:hover::before {
+    border-top-color: rgba(255, 140, 0, 0.95);
+}
+
+/* 脉冲动画效果 */
+.pin-button.pinned {
+    animation: pin-activated 0.6s ease-out;
+}
+
+@keyframes pin-activated {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+/* 通知样式 */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     background: #333;
     color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    margin-top: 25px;
-    margin-left: -20px;
+    padding: 12px 24px;
+    border-radius: 8px;
     z-index: 1000;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideInDown 0.3s ease;
+}
+
+.notification.success {
+    background: #4CAF50;
+}
+
+.notification.info {
+    background: #2196F3;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
