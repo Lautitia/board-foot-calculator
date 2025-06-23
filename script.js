@@ -86,6 +86,12 @@ class BoardFootCalculator {
             // Also track focus events for better user experience
             input.addEventListener('focus', () => {
                 this.currentlyEditingField = input.id;
+                
+                // For total fields, remove commas when user starts editing
+                if ((input.id === 'total-board-feet' || input.id === 'total-cost') && input.value) {
+                    const cleanValue = this.parseFormattedNumber(input.value);
+                    input.value = cleanValue.toString();
+                }
             });
             
             input.addEventListener('blur', () => {
@@ -275,13 +281,98 @@ class BoardFootCalculator {
         });
     }
 
-    // Helper method to parse numbers that may contain commas
-    parseFormattedNumber(value) {
+    // Helper method to parse numbers that may contain commas and format large numbers
+    parseFormattedNumber(value, shouldFormat = true) {
+        let cleanNumericString;
+        
         if (typeof value === 'string') {
-            // Remove commas and parse as float
-            return parseFloat(value.replace(/,/g, '')) || 0;
+            // Remove existing commas if any
+            cleanNumericString = value.replace(/,/g, '');
+        } else {
+            cleanNumericString = value.toString();
         }
-        return parseFloat(value) || 0;
+        
+        // If shouldFormat is false, just return the numeric value (original behavior)
+        if (!shouldFormat) {
+            return parseFloat(cleanNumericString) || 0;
+        }
+        
+        // Format the number with thousand separators for large numbers
+        // Validate that it's a valid number string
+        if (!/^-?\d*\.?\d*$/.test(cleanNumericString) || cleanNumericString === '' || cleanNumericString === '.') {
+            return '0.00';
+        }
+        
+        // Split into integer and decimal parts
+        const parts = cleanNumericString.split('.');
+        let integerPart = parts[0] || '0';
+        let decimalPart = parts[1] || '';
+        
+        // Handle negative numbers
+        const isNegative = integerPart.startsWith('-');
+        if (isNegative) {
+            integerPart = integerPart.substring(1);
+        }
+        
+        // Remove leading zeros from integer part but keep at least one digit
+        integerPart = integerPart.replace(/^0+/, '') || '0';
+        
+        // Add thousand separators to integer part
+        // Process from right to left
+        let formattedInteger = '';
+        for (let i = integerPart.length - 1, count = 0; i >= 0; i--, count++) {
+            if (count > 0 && count % 3 === 0) {
+                formattedInteger = ',' + formattedInteger;
+            }
+            formattedInteger = integerPart[i] + formattedInteger;
+        }
+        
+        // Handle decimal part - ensure exactly 2 digits for currency/board feet
+        if (decimalPart.length === 0) {
+            decimalPart = '00';
+        } else if (decimalPart.length === 1) {
+            decimalPart = decimalPart + '0';
+        } else if (decimalPart.length > 2) {
+            // For very long decimal strings, round to 2 decimal places
+            // Use string manipulation to avoid precision issues
+            let roundDigit = parseInt(decimalPart[2]);
+            decimalPart = decimalPart.substring(0, 2);
+            
+            // Simple rounding logic
+            if (roundDigit >= 5) {
+                let lastDigit = parseInt(decimalPart[1]) + 1;
+                if (lastDigit >= 10) {
+                    lastDigit = 0;
+                    let secondLastDigit = parseInt(decimalPart[0]) + 1;
+                    if (secondLastDigit >= 10) {
+                        // Need to carry over to integer part
+                        secondLastDigit = 0;
+                        // Convert integer part back to number, add 1, then format again
+                        let intAsNum = parseInt(integerPart) + 1;
+                        integerPart = intAsNum.toString();
+                        // Reformat integer part with commas
+                        formattedInteger = '';
+                        for (let i = integerPart.length - 1, count = 0; i >= 0; i--, count++) {
+                            if (count > 0 && count % 3 === 0) {
+                                formattedInteger = ',' + formattedInteger;
+                            }
+                            formattedInteger = integerPart[i] + formattedInteger;
+                        }
+                    }
+                    decimalPart = secondLastDigit.toString() + lastDigit.toString();
+                } else {
+                    decimalPart = decimalPart[0] + lastDigit.toString();
+                }
+            }
+        }
+        
+        // Construct the final formatted value
+        let finalFormattedValue = formattedInteger + '.' + decimalPart;
+        if (isNegative) {
+            finalFormattedValue = '-' + finalFormattedValue;
+        }
+        
+        return finalFormattedValue;
     }
 
     calculate() {
@@ -406,7 +497,9 @@ class BoardFootCalculator {
         const oldValue = element.tagName === 'INPUT' ? element.value : element.textContent;
         if (oldValue !== value) {
             if (element.tagName === 'INPUT') {
-                element.value = value;
+                // For all input fields, remove commas to avoid parsing errors
+                const cleanValue = typeof value === 'string' ? value.replace(/,/g, '') : value;
+                element.value = cleanValue;
             } else {
                 element.textContent = value;
             }
@@ -618,10 +711,10 @@ class BoardFootCalculator {
                         this.price.value = value;
                         break;
                     case 'total-board-feet':
-                        this.totalBoardFeet.value = this.formatNumberForDisplay(parseFloat(value), 2);
+                        this.totalBoardFeet.value = parseFloat(value).toFixed(2);
                         break;
                     case 'total-cost':
-                        this.totalCost.value = this.formatNumberForDisplay(parseFloat(value), 2);
+                        this.totalCost.value = parseFloat(value).toFixed(2);
                         break;
                 }
             }
