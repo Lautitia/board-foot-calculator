@@ -5,6 +5,7 @@ class BoardFootCalculator {
         this.initializeElements();
         this.loadSavedValues();
         this.bindEvents();
+        this.initializeMainUnitLabels();
         this.calculate();
     }
 
@@ -41,6 +42,18 @@ class BoardFootCalculator {
         this.thicknessSubUnit = document.getElementById('thickness-sub-unit');
         this.widthSubUnit = document.getElementById('width-sub-unit');
         this.lengthSubUnit = document.getElementById('length-sub-unit');
+        
+        // Main unit labels
+        this.thicknessMainUnit = document.getElementById('thickness-main-unit');
+        this.widthMainUnit = document.getElementById('width-main-unit');
+        this.lengthMainUnit = document.getElementById('length-main-unit');
+    }
+
+    initializeMainUnitLabels() {
+        // Set initial main unit labels based on default selected values
+        this.handleUnitChange(this.thicknessUnit);
+        this.handleUnitChange(this.widthUnit);
+        this.handleUnitChange(this.lengthUnit);
     }
 
     bindEvents() {
@@ -84,26 +97,29 @@ class BoardFootCalculator {
 
     handleUnitChange(select) {
         const isComposite = select.value.includes('/');
-        let fractionInput, container, subUnitLabel, separator, mainInput;
+        let fractionInput, container, subUnitLabel, separator, mainInput, mainUnitLabel;
 
         if (select.id === 'thickness-unit') {
             fractionInput = this.thicknessFraction;
             container = this.thicknessInputContainer;
             subUnitLabel = this.thicknessSubUnit;
             mainInput = this.thickness;
+            mainUnitLabel = this.thicknessMainUnit;
         } else if (select.id === 'width-unit') {
             fractionInput = this.widthFraction;
             container = this.widthInputContainer;
             subUnitLabel = this.widthSubUnit;
             mainInput = this.width;
+            mainUnitLabel = this.widthMainUnit;
         } else if (select.id === 'length-unit') {
             fractionInput = this.lengthFraction;
             container = this.lengthInputContainer;
             subUnitLabel = this.lengthSubUnit;
             mainInput = this.length;
+            mainUnitLabel = this.lengthMainUnit;
         }
 
-        if (fractionInput && container && subUnitLabel && mainInput) {
+        if (fractionInput && container && subUnitLabel && mainInput && mainUnitLabel) {
             separator = container.querySelector('.separator');
             
             if (isComposite) {
@@ -114,10 +130,12 @@ class BoardFootCalculator {
                 subUnitLabel.style.display = 'inline';
                 container.classList.add('composite');
                 
-                // Set sub-unit label
+                // Set unit labels for composite units
                 if (select.value === 'ft/in') {
+                    mainUnitLabel.textContent = 'ft';
                     subUnitLabel.textContent = 'in';
                 } else if (select.value === 'm/cm') {
+                    mainUnitLabel.textContent = 'm';
                     subUnitLabel.textContent = 'cm';
                 }
             } else {
@@ -128,6 +146,16 @@ class BoardFootCalculator {
                 subUnitLabel.style.display = 'none';
                 fractionInput.value = '';
                 container.classList.remove('composite');
+                
+                // Set main unit label for non-composite units
+                const unitMap = {
+                    'in': 'in',
+                    'mm': 'mm',
+                    'cm': 'cm',
+                    'm': 'm',
+                    'ft': 'ft'
+                };
+                mainUnitLabel.textContent = unitMap[select.value] || select.value;
             }
         }
     }

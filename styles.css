@@ -302,6 +302,19 @@ input[type="number"]:focus {
     margin-left: 4px;
 }
 
+.main-unit-label {
+    font-size: 14px;
+    color: #666666;
+    font-weight: 300;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+.combined-input.composite .main-unit-label {
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
 .unit-select {
     width: 120px;
     height: 48px;
