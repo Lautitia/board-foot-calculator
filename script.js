@@ -233,12 +233,12 @@ class BoardFootCalculator {
             // 取消固定
             button.classList.remove('pinned');
             this.clearSavedValue(field);
-            this.showNotification(`已取消保存 ${this.getFieldDisplayName(field)} 的数值`, 'info');
+            this.showNotification(`Disabled auto-save for ${this.getFieldDisplayName(field)}`, 'info');
         } else {
             // 固定值
             button.classList.add('pinned');
             this.saveValue(field);
-            this.showNotification(`已开启 ${this.getFieldDisplayName(field)} 的自动保存`, 'success');
+            this.showNotification(`Enabled auto-save for ${this.getFieldDisplayName(field)}`, 'success');
         }
     }
 
@@ -250,11 +250,11 @@ class BoardFootCalculator {
 
     getFieldDisplayName(field) {
         const names = {
-            'pieces': '板块数量',
-            'thickness': '厚度',
-            'width': '宽度',
-            'length': '长度',
-            'price': '单价'
+            'pieces': 'Number of Pieces',
+            'thickness': 'Thickness',
+            'width': 'Width',
+            'length': 'Length',
+            'price': 'Price per Board Foot'
         };
         return names[field] || field;
     }
@@ -345,18 +345,18 @@ class BoardFootCalculator {
     shareResult() {
         const boardFeet = this.totalBoardFeet.textContent;
         const cost = this.totalCost.textContent;
-        const shareText = `板英尺计算结果：${boardFeet} 板英尺，总成本：¥${cost}`;
+        const shareText = `Board Foot Calculation Result: ${boardFeet} board feet, Total Cost: $${cost}`;
         
         if (navigator.share) {
             navigator.share({
-                title: '板英尺计算器结果',
+                title: 'Board Foot Calculator Result',
                 text: shareText,
                 url: window.location.href
             });
         } else {
             // 备用方案：复制到剪贴板
             navigator.clipboard.writeText(shareText).then(() => {
-                this.showNotification('计算结果已复制到剪贴板', 'success');
+                this.showNotification('Calculation result copied to clipboard', 'success');
             }).catch(() => {
                 // 如果复制失败，显示结果
                 alert(shareText);
@@ -400,7 +400,7 @@ class BoardFootCalculator {
         // 重新计算
         this.calculate();
         
-        this.showNotification('所有设置已重置', 'success');
+        this.showNotification('All settings have been reset', 'success');
     }
 
     submitFeedback(isPositive) {
@@ -416,7 +416,7 @@ class BoardFootCalculator {
         localStorage.setItem('bf_calc_feedback_date', new Date().toISOString());
         
         // 显示感谢消息
-        const message = isPositive ? '感谢您的正面反馈！' : '感谢您的反馈，我们会继续改进。';
+        const message = isPositive ? 'Thank you for your positive feedback!' : 'Thank you for your feedback, we will continue to improve.';
         this.showNotification(message, 'success');
     }
 
@@ -449,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 错误处理
 window.addEventListener('error', (e) => {
-    console.error('页面错误:', e);
+    console.error('Page Error:', e);
 });
 
 // 页面可见性变化时保存状态

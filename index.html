@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>板英尺计算器</title>
+    <title>Board Foot Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
@@ -13,16 +13,16 @@
     <div class="container">
         <div class="calculator-card">
             <header class="header">
-                <h1>板英尺计算器</h1>
-                <p class="subtitle">Board Foot Calculator</p>
+                <h1>Board Foot Calculator</h1>
+                <p class="subtitle">Lumber Volume Calculator</p>
             </header>
 
             <div class="input-section">
                 <div class="input-group">
                     <div class="label-row">
-                        <label for="pieces">板块数量</label>
-                        <button class="pin-button" data-field="pieces" title="保存数值">
-                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        <label for="pieces">Number of Pieces</label>
+                        <button class="pin-button" data-field="pieces" title="Save Value">
+                            <img src="public/pin.svg" alt="Save" class="pin-icon">
                         </button>
                     </div>
                     <input type="number" id="pieces" value="1" min="1" step="1">
@@ -30,9 +30,9 @@
 
                 <div class="input-group">
                     <div class="label-row">
-                        <label for="thickness">厚度</label>
-                        <button class="pin-button" data-field="thickness" title="保存数值">
-                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        <label for="thickness">Thickness</label>
+                        <button class="pin-button" data-field="thickness" title="Save Value">
+                            <img src="public/pin.svg" alt="Save" class="pin-icon">
                         </button>
                     </div>
                     <div class="input-with-unit">
@@ -49,9 +49,9 @@
 
                 <div class="input-group">
                     <div class="label-row">
-                        <label for="width">宽度</label>
-                        <button class="pin-button" data-field="width" title="保存数值">
-                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        <label for="width">Width</label>
+                        <button class="pin-button" data-field="width" title="Save Value">
+                            <img src="public/pin.svg" alt="Save" class="pin-icon">
                         </button>
                     </div>
                     <div class="input-with-unit">
@@ -75,9 +75,9 @@
 
                 <div class="input-group">
                     <div class="label-row">
-                        <label for="length">长度</label>
-                        <button class="pin-button" data-field="length" title="保存数值">
-                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        <label for="length">Length</label>
+                        <button class="pin-button" data-field="length" title="Save Value">
+                            <img src="public/pin.svg" alt="Save" class="pin-icon">
                         </button>
                     </div>
                     <div class="input-with-unit">
@@ -102,34 +102,34 @@
 
             <div class="result-section">
                 <div class="result-group">
-                    <label>总计</label>
+                    <label>Total</label>
                     <div class="result-display">
                         <span class="result-value" id="total-board-feet">0</span>
-                        <span class="result-unit">板英尺</span>
+                        <span class="result-unit">board feet</span>
                     </div>
                 </div>
             </div>
 
             <div class="cost-section">
-                <h3>成本计算</h3>
+                <h3>Cost Calculation</h3>
                 <div class="input-group">
                     <div class="label-row">
-                        <label for="price">单价</label>
-                        <button class="pin-button" data-field="price" title="保存数值">
-                            <img src="public/pin.svg" alt="保存" class="pin-icon">
+                        <label for="price">Price per Board Foot</label>
+                        <button class="pin-button" data-field="price" title="Save Value">
+                            <img src="public/pin.svg" alt="Save" class="pin-icon">
                         </button>
                     </div>
                     <div class="price-input">
-                        <span class="currency">¥</span>
+                        <span class="currency">$</span>
                         <input type="number" id="price" step="0.01" min="0" placeholder="0">
-                        <span class="price-unit">/ 板英尺</span>
+                        <span class="price-unit">/ board foot</span>
                     </div>
                 </div>
 
                 <div class="result-group">
-                    <label>总成本</label>
+                    <label>Total Cost</label>
                     <div class="result-display">
-                        <span class="currency">¥</span>
+                        <span class="currency">$</span>
                         <span class="result-value" id="total-cost">0</span>
                     </div>
                 </div>
@@ -138,18 +138,10 @@
             <div class="button-section">
                 <button class="share-button" id="share-result">
                     <span class="share-icon">📤</span>
-                    分享结果
+                    Share Result
                 </button>
-                <button class="reload-button" id="reload-calculator">重新加载计算器</button>
-                <button class="clear-button" id="clear-all">清空所有变更</button>
-            </div>
-
-            <div class="feedback-section">
-                <p>我们今天解决了您的问题吗？</p>
-                <div class="feedback-buttons">
-                    <button class="feedback-btn yes-btn" id="feedback-yes">👍 是的</button>
-                    <button class="feedback-btn no-btn" id="feedback-no">👎 没有</button>
-                </div>
+                <button class="reload-button" id="reload-calculator">Reload Calculator</button>
+                <button class="clear-button" id="clear-all">Clear All Changes</button>
             </div>
         </div>
     </div>

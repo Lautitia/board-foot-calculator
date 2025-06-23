@@ -1,119 +1,119 @@
-# 板英尺计算器 (Board Foot Calculator)
+# Board Foot Calculator
 
-一个现代化的静态网页板英尺计算器，支持多种单位转换和数值保存功能。
+A modern static web page board foot calculator with multi-unit conversion and value saving features.
 
-## 功能特点
+## Key Features
 
-### 核心计算功能
-- **板英尺计算**：根据厚度、宽度、长度自动计算板英尺数量
-- **成本计算**：根据单价自动计算总成本
-- **实时计算**：输入变化时自动更新结果
+### Core Calculation Functions
+- **Board Foot Calculation**: Automatically calculates board feet based on thickness, width, and length
+- **Cost Calculation**: Automatically calculates total cost based on unit price
+- **Real-time Calculation**: Automatically updates results when inputs change
 
-### 单位支持
-- **厚度单位**：英寸(in)、毫米(mm)、厘米(cm)、米(m)、英尺(ft)
-- **宽度单位**：英寸(in)、毫米(mm)、厘米(cm)、米(m)、英尺(ft)、英尺+英寸(ft+in)、米+厘米(m+cm)
-- **长度单位**：英尺(ft)、英寸(in)、毫米(mm)、厘米(cm)、米(m)、英尺+英寸(ft+in)、米+厘米(m+cm)
+### Unit Support
+- **Thickness Units**: inches (in), millimeters (mm), centimeters (cm), meters (m), feet (ft)
+- **Width Units**: inches (in), millimeters (mm), centimeters (cm), meters (m), feet (ft), feet+inches (ft+in), meters+centimeters (m+cm)
+- **Length Units**: feet (ft), inches (in), millimeters (mm), centimeters (cm), meters (m), feet+inches (ft+in), meters+centimeters (m+cm)
 
-### 数据保存功能
-- **图钉保存**：每个输入框旁的📌按钮可保存当前值
-- **自动加载**：页面刷新后自动加载已保存的值
-- **本地存储**：数据保存在浏览器本地，无需服务器
+### Data Saving Features
+- **Pin Save**: The 📌 button next to each input field can save the current value
+- **Auto Load**: Automatically loads saved values after page refresh
+- **Local Storage**: Data is saved in browser local storage, no server required
 
-### 其他功能
-- **分享结果**：一键分享计算结果
-- **重新加载**：重置计算器到初始状态
-- **清空变更**：清除所有保存的数据
-- **用户反馈**：收集用户使用反馈
+### Other Features
+- **Share Results**: One-click sharing of calculation results
+- **Reload**: Reset calculator to initial state
+- **Clear Changes**: Clear all saved data
+- **User Feedback**: Collect user feedback
 
-## 板英尺简介
+## Board Foot Introduction
 
-**板英尺**是北美（美国和加拿大）广泛使用的木材体积计量单位。
+**Board foot** is a unit of lumber volume measurement widely used in North America (United States and Canada).
 
-- **定义**：1 板英尺 = 长1英尺 × 宽1英尺 × 厚1英寸的木板体积
-- **换算**：1 板英尺 = 144 立方英寸
-- **计算公式**：板英尺 = (厚度 × 宽度 × 长度) ÷ 144 × 块数
+- **Definition**: 1 board foot = volume of a board 1 foot long × 1 foot wide × 1 inch thick
+- **Conversion**: 1 board foot = 144 cubic inches
+- **Formula**: Board feet = (thickness × width × length) ÷ 144 × number of pieces
 
-## 使用方法
+## How to Use
 
-1. **输入基本信息**
-   - 板块数量：要计算的木板块数
-   - 厚度：木板厚度（支持多种单位）
-   - 宽度：木板宽度（支持多种单位）
-   - 长度：木板长度（支持多种单位）
+1. **Enter Basic Information**
+   - Number of pieces: Number of lumber pieces to calculate
+   - Thickness: Lumber thickness (supports multiple units)
+   - Width: Lumber width (supports multiple units)
+   - Length: Lumber length (supports multiple units)
 
-2. **复合单位使用**
-   - 当选择"ft + in"或"m + cm"时，会出现第二个输入框
-   - 第一个框输入主单位，第二个框输入辅助单位
+2. **Using Composite Units**
+   - When selecting "ft + in" or "m + cm", a second input field will appear
+   - Enter the main unit in the first field, auxiliary unit in the second field
 
-3. **保存数值**
-   - 点击输入框右上角的📌按钮保存当前值
-   - 保存后的值在页面刷新后会自动加载
+3. **Saving Values**
+   - Click the 📌 button in the upper right corner of input fields to save current values
+   - Saved values will automatically load after page refresh
 
-4. **成本计算**
-   - 输入每板英尺的单价
-   - 系统自动计算总成本
+4. **Cost Calculation**
+   - Enter price per board foot
+   - System automatically calculates total cost
 
-## 技术特点
+## Technical Features
 
-### 设计风格
-- **配色方案**：采用温暖的木质色调，营造专业的木工氛围
-- **响应式设计**：适配各种屏幕尺寸
-- **现代UI**：简洁美观的界面设计
+### Design Style
+- **Color Scheme**: Warm wood tones to create a professional woodworking atmosphere
+- **Responsive Design**: Adapts to various screen sizes
+- **Modern UI**: Clean and beautiful interface design
 
-### 技术实现
-- **纯静态页面**：HTML + CSS + JavaScript，无需服务器
-- **本地存储**：使用localStorage保存用户数据
-- **实时计算**：输入变化时即时更新结果
-- **单位转换**：支持公制和英制单位互转
+### Technical Implementation
+- **Pure Static Page**: HTML + CSS + JavaScript, no server required
+- **Local Storage**: Uses localStorage to save user data
+- **Real-time Calculation**: Updates results instantly when inputs change
+- **Unit Conversion**: Supports conversion between metric and imperial units
 
-## 文件结构
+## File Structure
 
 ```
 board-foot-calculator/
-├── index.html          # 主页面
-├── styles.css          # 样式文件
-├── script.js           # JavaScript逻辑
-└── README.md           # 说明文档
+├── index.html          # Main page
+├── styles.css          # Style file
+├── script.js           # JavaScript logic
+└── README.md           # Documentation
 ```
 
-## 浏览器兼容性
+## Browser Compatibility
 
 - Chrome 60+
 - Firefox 55+
 - Safari 11+
 - Edge 79+
 
-## 部署说明
+## Deployment Instructions
 
-这是一个纯静态网页项目，可以通过以下方式部署：
+This is a pure static web project that can be deployed in the following ways:
 
-1. **本地预览**：直接双击 `index.html` 文件
-2. **Web服务器**：将文件上传到任何Web服务器
-3. **GitHub Pages**：推送到GitHub并启用Pages功能
-4. **Netlify/Vercel**：连接Git仓库自动部署
+1. **Local Preview**: Double-click the `index.html` file directly
+2. **Web Server**: Upload files to any web server
+3. **GitHub Pages**: Push to GitHub and enable Pages feature
+4. **Netlify/Vercel**: Connect Git repository for automatic deployment
 
-## 开发说明
+## Development Notes
 
-### 颜色方案
-- 背景色：`#F5F5DC` (米色)
-- 卡片背景：`#FFFFFF` (白色，80%透明度)
-- 主色调：`#8B4513` (温暖棕色)
-- 强调色：`#FF8C00` (工具橙)
-- 文字色：`#333333` (深灰色)
+### Color Scheme
+- Background: `#F5F5DC` (Beige)
+- Card Background: `#FFFFFF` (White, 80% opacity)
+- Primary Color: `#8B4513` (Warm Brown)
+- Accent Color: `#FF8C00` (Tool Orange)
+- Text Color: `#333333` (Dark Gray)
 
-### 字体
-- 标题：Roboto Slab (衬线字体)
-- 正文：Lato (无衬线字体)
+### Fonts
+- Headings: Roboto Slab (serif font)
+- Body Text: Lato (sans-serif font)
 
-## 许可证
+## License
 
 MIT License
 
-## 更新日志
+## Change Log
 
 ### v1.0.0 (2025-06-23)
-- 初始版本发布
-- 实现基础计算功能
-- 支持多种单位转换
-- 添加数据保存功能
-- 实现响应式设计
+- Initial release
+- Implemented basic calculation functions
+- Added multi-unit conversion support
+- Added data saving functionality
+- Implemented responsive design
