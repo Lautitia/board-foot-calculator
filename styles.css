@@ -51,7 +51,7 @@ body {
 
 /* 输入区域样式 */
 .input-section {
-    margin-bottom: 24px;
+    margin-bottom: 14px;
 }
 
 .input-group {
@@ -226,7 +226,7 @@ input[type="number"]:focus {
 
 /* 覆盖combined-input内部input的样式，避免width冲突 */
 .combined-input input[type="number"] {
-    width: 50%;
+    width: 100%;
     height: auto;
     padding: 0;
     border: none;
