@@ -696,6 +696,10 @@ input[type="number"]:focus {
     background: #2196F3;
 }
 
+.notification.warning {
+    background: #FF9800;
+}
+
 @keyframes slideInDown {
     from {
         opacity: 0;
