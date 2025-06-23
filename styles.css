@@ -378,9 +378,9 @@ input[type="number"]:focus {
 
 /* 结果显示区域 */
 .result-section {
-    margin-bottom: 24px;
-    padding: 20px 0;
-    border-top: 1px solid #E0E0E0;
+    /* margin-bottom: 24px; */
+    /* padding: 20px 0; */
+    /* border-top: 1px solid #E0E0E0; */
 }
 
 .cost-section {
