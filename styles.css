@@ -224,6 +224,16 @@ input[type="number"]:focus {
     border-width: 2px;
 }
 
+/* 覆盖combined-input内部input的样式，避免width冲突 */
+.combined-input input[type="number"] {
+    width: 50%;
+    height: auto;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+}
+
 /* 带单位的输入框 */
 .input-with-unit {
     display: flex;
@@ -255,6 +265,7 @@ input[type="number"]:focus {
     color: #333333;
     text-align: center;
     min-width: 0;
+    width: 100%;
 }
 
 .combined-input input:focus {
@@ -269,6 +280,7 @@ input[type="number"]:focus {
 .combined-input.composite input:first-child {
     text-align: right;
     flex: 1;
+    /* width: auto; */
 }
 
 .combined-input.composite .separator {
@@ -277,9 +289,10 @@ input[type="number"]:focus {
     margin: 0 4px;
 }
 
-.combined-input.composite input:last-child {
+.combined-input.composite input:nth-of-type(2) {
     text-align: left;
     flex: 1;
+    /* width: auto; */
 }
 
 .combined-input.composite .unit-label {

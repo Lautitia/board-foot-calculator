@@ -84,26 +84,31 @@ class BoardFootCalculator {
 
     handleUnitChange(select) {
         const isComposite = select.value.includes('/');
-        let fractionInput, container, subUnitLabel, separator;
+        let fractionInput, container, subUnitLabel, separator, mainInput;
 
         if (select.id === 'thickness-unit') {
             fractionInput = this.thicknessFraction;
             container = this.thicknessInputContainer;
             subUnitLabel = this.thicknessSubUnit;
+            mainInput = this.thickness;
         } else if (select.id === 'width-unit') {
             fractionInput = this.widthFraction;
             container = this.widthInputContainer;
             subUnitLabel = this.widthSubUnit;
+            mainInput = this.width;
         } else if (select.id === 'length-unit') {
             fractionInput = this.lengthFraction;
             container = this.lengthInputContainer;
             subUnitLabel = this.lengthSubUnit;
+            mainInput = this.length;
         }
 
-        if (fractionInput && container && subUnitLabel) {
+        if (fractionInput && container && subUnitLabel && mainInput) {
             separator = container.querySelector('.separator');
             
             if (isComposite) {
+                // Ensure main input is visible
+                mainInput.style.display = 'block';
                 fractionInput.style.display = 'block';
                 separator.style.display = 'inline';
                 subUnitLabel.style.display = 'inline';
@@ -116,6 +121,8 @@ class BoardFootCalculator {
                     subUnitLabel.textContent = 'cm';
                 }
             } else {
+                // Ensure main input is visible for non-composite units
+                mainInput.style.display = 'block';
                 fractionInput.style.display = 'none';
                 separator.style.display = 'none';
                 subUnitLabel.style.display = 'none';
