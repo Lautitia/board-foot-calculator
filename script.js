@@ -90,11 +90,21 @@ class BoardFootCalculator {
         });
 
         // Other button events
-        this.shareButton.addEventListener('click', () => this.shareResult());
-        this.reloadButton.addEventListener('click', () => this.reloadCalculator());
-        this.clearButton.addEventListener('click', () => this.clearAllChanges());
-        this.feedbackYes.addEventListener('click', () => this.submitFeedback(true));
-        this.feedbackNo.addEventListener('click', () => this.submitFeedback(false));
+        if (this.shareButton) {
+            this.shareButton.addEventListener('click', () => this.shareResult());
+        }
+        if (this.reloadButton) {
+            this.reloadButton.addEventListener('click', () => this.reloadCalculator());
+        }
+        if (this.clearButton) {
+            this.clearButton.addEventListener('click', () => this.clearAllChanges());
+        }
+        if (this.feedbackYes) {
+            this.feedbackYes.addEventListener('click', () => this.submitFeedback(true));
+        }
+        if (this.feedbackNo) {
+            this.feedbackNo.addEventListener('click', () => this.submitFeedback(false));
+        }
     }
 
     handleUnitChange(select) {
@@ -232,8 +242,9 @@ class BoardFootCalculator {
             // Get current locked states
             const lockedFields = this.getLockedFields();
             
-            // Get input values (use current values for locked fields, 0 for unlocked if empty)
-            let pieces = parseFloat(this.pieces.value) || (lockedFields.includes('pieces') ? parseFloat(this.pieces.value) || 1 : 1);
+            // Get input values - for locked fields, always use their current values (including empty/0)
+            // For unlocked fields, we'll calculate them
+            let pieces = parseFloat(this.pieces.value) || (lockedFields.includes('pieces') ? parseFloat(this.pieces.value) || 0 : 1);
             let thickness = parseFloat(this.thickness.value) || 0;
             let thicknessFrac = parseFloat(this.thicknessFraction.value) || 0;
             let width = parseFloat(this.width.value) || 0;
@@ -243,6 +254,11 @@ class BoardFootCalculator {
             let pricePerBF = parseFloat(this.price.value) || 0;
             let boardFeet = parseFloat(this.totalBoardFeet.value) || 0;
             let totalCost = parseFloat(this.totalCost.value) || 0;
+
+            // For locked fields, ensure we use their actual values even if 0
+            if (lockedFields.includes('pieces')) {
+                pieces = parseFloat(this.pieces.value) || 1; // Default to 1 for pieces if empty
+            }
 
             // Convert dimensions to inches
             let thicknessInches = this.convertToInches(thickness, this.thicknessUnit.value, thicknessFrac);
@@ -256,10 +272,12 @@ class BoardFootCalculator {
                 // Calculate board feet from dimensions
                 if (thicknessInches > 0 && widthInches > 0 && lengthInches > 0 && pieces > 0) {
                     boardFeet = (thicknessInches * widthInches * lengthInches) / 144 * pieces;
+                    this.updateResult(this.totalBoardFeet, boardFeet.toFixed(2));
                 } else {
+                    // If any required dimension is 0 or missing, set board feet to 0
                     boardFeet = 0;
+                    this.updateResult(this.totalBoardFeet, '0.00');
                 }
-                this.updateResult(this.totalBoardFeet, boardFeet.toFixed(2));
             }
             
             if (!lockedFields.includes('total-cost')) {
@@ -596,9 +614,10 @@ class BoardFootCalculator {
         const keys = Object.keys(localStorage).filter(key => key.startsWith('bf_calc_'));
         keys.forEach(key => localStorage.removeItem(key));
         
-        // Reset all inputs
+        // Reset all inputs to empty/default values
         this.pieces.value = '1';
         this.thickness.value = '';
+        this.thicknessFraction.value = '';
         this.width.value = '';
         this.widthFraction.value = '';
         this.length.value = '';
@@ -607,30 +626,45 @@ class BoardFootCalculator {
         this.totalBoardFeet.value = '0';
         this.totalCost.value = '0';
         
-        // Reset units
+        // Reset units to default
         this.thicknessUnit.value = 'in';
         this.widthUnit.value = 'in';
         this.lengthUnit.value = 'ft';
         
-        // Reset composite input boxes
+        // Reset composite input displays
+        this.handleUnitChange(this.thicknessUnit);
         this.handleUnitChange(this.widthUnit);
         this.handleUnitChange(this.lengthUnit);
         
-        // Remove all pinned states and reset icons
+        // Reset all lock states to unlocked first
         this.pinButtons.forEach(button => {
             button.classList.remove('pinned');
             const lockIcon = button.querySelector('.lock-icon');
             if (lockIcon) {
                 lockIcon.src = 'public/unlock.svg';
                 lockIcon.alt = 'Unlock';
-                button.title = 'Save Value';
+                button.title = 'Value will be calculated';
             }
         });
         
-        // Recalculate
+        // Apply minimal lock state: only lock total-cost to ensure calculation works
+        // This leaves 6 fields unlocked and only 1 locked, which satisfies the "at least one field unlocked" rule
+        const defaultLockedField = 'total-cost'; // Lock total-cost by default
+        const buttonToLock = document.querySelector(`[data-field="${defaultLockedField}"]`);
+        if (buttonToLock) {
+            buttonToLock.classList.add('pinned');
+            const lockIcon = buttonToLock.querySelector('.lock-icon');
+            if (lockIcon) {
+                lockIcon.src = 'public/lock.svg';
+                lockIcon.alt = 'Lock';
+                lockIcon.title = 'Value Locked';
+            }
+        }
+        
+        // Recalculate with new values
         this.calculate();
         
-        this.showNotification('All settings have been reset', 'success');
+        this.showNotification('All values and lock states have been reset to default', 'success');
     }
 
     submitFeedback(isPositive) {
