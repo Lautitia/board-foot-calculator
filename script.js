@@ -3,6 +3,7 @@
 class BoardFootCalculator {
     constructor() {
         this.initializeElements();
+        this.loadFromUrlParams(); // Load from URL parameters first
         this.loadSavedValues();
         this.bindEvents();
         this.initializeMainUnitLabels();
@@ -392,6 +393,70 @@ class BoardFootCalculator {
         return finalFormattedValue;
     }
 
+    // Load values from URL parameters
+    loadFromUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Check if there are any calculator parameters
+        const hasCalcParams = ['pieces', 'thickness', 'thicknessUnit', 'thicknessFraction', 'width', 'widthUnit', 'widthFraction', 'length', 'lengthUnit', 'lengthFraction', 'price'].some(param => urlParams.has(param));
+        
+        if (!hasCalcParams) {
+            return; // No parameters to load
+        }
+        
+        // Load input values if they exist in URL
+        if (urlParams.has('pieces')) {
+            this.pieces.value = urlParams.get('pieces');
+        }
+        
+        if (urlParams.has('thickness')) {
+            this.thickness.value = urlParams.get('thickness');
+        }
+        
+        if (urlParams.has('thicknessUnit')) {
+            this.thicknessUnit.value = urlParams.get('thicknessUnit');
+            this.handleUnitChange(this.thicknessUnit);
+        }
+        
+        if (urlParams.has('thicknessFraction')) {
+            this.thicknessFraction.value = urlParams.get('thicknessFraction');
+        }
+        
+        if (urlParams.has('width')) {
+            this.width.value = urlParams.get('width');
+        }
+        
+        if (urlParams.has('widthUnit')) {
+            this.widthUnit.value = urlParams.get('widthUnit');
+            this.handleUnitChange(this.widthUnit);
+        }
+        
+        if (urlParams.has('widthFraction')) {
+            this.widthFraction.value = urlParams.get('widthFraction');
+        }
+        
+        if (urlParams.has('length')) {
+            this.length.value = urlParams.get('length');
+        }
+        
+        if (urlParams.has('lengthUnit')) {
+            this.lengthUnit.value = urlParams.get('lengthUnit');
+            this.handleUnitChange(this.lengthUnit);
+        }
+        
+        if (urlParams.has('lengthFraction')) {
+            this.lengthFraction.value = urlParams.get('lengthFraction');
+        }
+        
+        if (urlParams.has('price')) {
+            this.price.value = urlParams.get('price');
+        }
+        
+        // Clear URL parameters after loading to keep URL clean
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
     calculate() {
         try {
             // Get current locked states
@@ -744,25 +809,90 @@ class BoardFootCalculator {
 
     // Button functions
     shareResult() {
-        const boardFeet = this.totalBoardFeet.value;
-        const cost = this.totalCost.value;
-        const shareText = `Board Foot Calculation Result: ${boardFeet} board feet, Total Cost: $${cost}`;
+        // Create URL with current calculator values as parameters
+        const currentUrl = new URL(window.location.href);
+        const params = new URLSearchParams();
         
-        if (navigator.share) {
-            navigator.share({
-                title: 'Board Foot Calculator Result',
-                text: shareText,
-                url: window.location.href
+        // Add all current input values to parameters
+        if (this.pieces.value) {
+            params.set('pieces', this.pieces.value);
+        }
+        
+        if (this.thickness.value) {
+            params.set('thickness', this.thickness.value);
+        }
+        
+        if (this.thicknessUnit.value && this.thicknessUnit.value !== 'in') {
+            params.set('thicknessUnit', this.thicknessUnit.value);
+        }
+        
+        if (this.thicknessFraction.value) {
+            params.set('thicknessFraction', this.thicknessFraction.value);
+        }
+        
+        if (this.width.value) {
+            params.set('width', this.width.value);
+        }
+        
+        if (this.widthUnit.value && this.widthUnit.value !== 'in') {
+            params.set('widthUnit', this.widthUnit.value);
+        }
+        
+        if (this.widthFraction.value) {
+            params.set('widthFraction', this.widthFraction.value);
+        }
+        
+        if (this.length.value) {
+            params.set('length', this.length.value);
+        }
+        
+        if (this.lengthUnit.value && this.lengthUnit.value !== 'ft') {
+            params.set('lengthUnit', this.lengthUnit.value);
+        }
+        
+        if (this.lengthFraction.value) {
+            params.set('lengthFraction', this.lengthFraction.value);
+        }
+        
+        if (this.price.value) {
+            params.set('price', this.price.value);
+        }
+        
+        // Create the share URL
+        const shareUrl = `${currentUrl.origin}${currentUrl.pathname}?${params.toString()}`;
+        
+        // Copy to clipboard
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                this.showNotification('Share link copied to clipboard!', 'success');
+            }).catch(() => {
+                this.fallbackCopyToClipboard(shareUrl);
             });
         } else {
-            // Fallback: copy to clipboard
-            navigator.clipboard.writeText(shareText).then(() => {
-                this.showNotification('Calculation result copied to clipboard', 'success');
-            }).catch(() => {
-                // If copy fails, show result
-                alert(shareText);
-            });
+            this.fallbackCopyToClipboard(shareUrl);
         }
+    }
+    
+    // Fallback method for copying to clipboard
+    fallbackCopyToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            this.showNotification('Share link copied to clipboard!', 'success');
+        } catch (err) {
+            this.showNotification('Unable to copy to clipboard. Please copy the URL manually.', 'warning');
+            console.error('Fallback: Could not copy text: ', err);
+        }
+        
+        document.body.removeChild(textArea);
     }
 
     reloadCalculator() {
