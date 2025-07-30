@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://yoursite.com/sitemap.xml
+Sitemap: https://boardfootcalculator.help/sitemap.xml
 
 # Crawl-delay (optional, adjust as needed)
 Crawl-delay: 1
